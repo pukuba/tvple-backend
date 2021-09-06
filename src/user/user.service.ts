@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { getRepository, Repository } from 'typeorm';
 import env from "../config/env"
-import jwt from "jsonwebtoken"
+import * as jwt from 'jsonwebtoken';
 import { CreateUserDto } from './dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { validate } from 'class-validator';
