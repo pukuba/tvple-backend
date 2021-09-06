@@ -5,7 +5,7 @@ import * as argon2 from 'argon2';
 export class UserEntity {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     username: string;
