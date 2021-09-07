@@ -2,6 +2,7 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { getRepository, Repository } from 'typeorm';
+import { AuthCodeJwtResult } from './user.interface';
 import * as crypto from 'crypto-js';
 import fetch from 'node-fetch';
 import { randNumber } from '../../shared/lib';
@@ -11,6 +12,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { validate } from 'class-validator';
 import * as redis from '../../shared/memory/connect.redis';
 import env from '../../config/env';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -19,8 +21,24 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    const { username, phoneNumber, password, id } = dto;
-
+    const { username, phoneNumber, password, id, authCodeToken } = dto;
+    try {
+      const jwtResult = jwt.verify(
+        authCodeToken,
+        env.JWT_TOKEN,
+      ) as AuthCodeJwtResult;
+      if (jwtResult.phoneNumber !== phoneNumber) {
+        throw '';
+      }
+    } catch {
+      throw new HttpException(
+        {
+          message:
+            '전화번호 인증이 만료되었거나 전화번호가 인증되지 않았습니다.',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const qb = getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.username = :username', { username })
@@ -53,7 +71,10 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
       );
     } else {
-      const savedUser = await this.userRepository.save(newUser);
+      const [savedUser] = await Promise.all([
+        this.userRepository.save(newUser),
+        redis.del(phoneNumber),
+      ]);
       return this.buildUserRO(savedUser);
     }
   }
