@@ -8,15 +8,15 @@ import {
     Controller,
     UsePipes,
 } from "@nestjs/common"
-import { CreateUserDto, CreateAuthCodeDto, CheckAuthCodeDto } from "./dto"
+import { CreateUserDto, CreateAuthCodeDto, CheckAuthCodeDto } from "../dto"
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
-import { UserService } from "./user.service"
-import { ValidationPipe } from "../../shared/pipes/validation.pipe"
+import { AuthService } from "../service/auth.service"
+import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 
 @ApiTags("user")
 @Controller("v1")
-export class UserController {
-    constructor(private readonly userService: UserService) {}
+export class AuthController {
+    constructor(private readonly userService: AuthService) { }
 
     @UsePipes(new ValidationPipe())
     @Post("users")

@@ -5,16 +5,20 @@ import {
     RequestMethod,
 } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { UserController } from "./user.controller"
-import { UserEntity } from "./user.entity"
-import { UserService } from "./user.service"
+import { AuthController } from "./controller/auth.controller"
+import { UserEntity } from "../../shared/entities/users.entity"
+import { AuthService } from "./service/auth.service"
+import { RedisService } from "src/shared/Services/redis.service"
 @Module({
     imports: [TypeOrmModule.forFeature([UserEntity])],
-    providers: [UserService],
-    controllers: [UserController],
-    exports: [UserService],
+    providers: [
+        AuthService,
+        RedisService
+    ],
+    controllers: [AuthController],
+    exports: [AuthService],
 })
-export class UserModule {}
+export class AuthModule { }
 // implements NestModule {
 // public configure(consumer: MiddlewareConsumer) {
 //   consumer

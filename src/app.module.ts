@@ -2,9 +2,10 @@ import { Module } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { AppController } from "./app.controller"
 import { Connection } from "typeorm"
-import { UserModule } from "./app/user/user.module"
+import { AuthModule } from "./app/auth/auth.module"
 import { ConfigModule } from "@nestjs/config"
-import { AuthService } from "./auth/auth.service"
+import { AuthService } from "./app/auth/service/auth.service"
+import { RedisService } from "./shared/Services/redis.service"
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -12,11 +13,11 @@ import { AuthService } from "./auth/auth.service"
             isGlobal: true,
         }),
         TypeOrmModule.forRoot(),
-        UserModule,
+        AuthModule,
     ],
     controllers: [AppController],
-    providers: [AuthService],
+    providers: [RedisService],
 })
 export class ApplicationModule {
-    constructor(private readonly connection: Connection) {}
+    constructor(private readonly connection: Connection) { }
 }
