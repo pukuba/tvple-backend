@@ -6,7 +6,7 @@ import * as crypto from 'crypto-js';
 import fetch from 'node-fetch';
 import { randNumber } from '../../shared/lib';
 import * as jwt from 'jsonwebtoken';
-import { CreateUserDto, CreateAuthCodeDto } from './dto';
+import { CreateUserDto, CreateAuthCodeDto, CheckAuthCodeDto } from './dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { validate } from 'class-validator';
 import * as redis from '../../shared/memory/connect.redis';
@@ -63,7 +63,40 @@ export class UserService {
     await this.authCodePost(phoneNumber);
   }
 
-  public generateUserJWT(user) {
+  async checkAuthCode(dto: CheckAuthCodeDto) {
+    const { phoneNumber, authCode } = dto;
+    const authorizationCode = await redis.get(phoneNumber);
+    if (authorizationCode === null) {
+      const _errors = { message: '인증번호를 다시 요청해주세요' };
+      throw new HttpException(
+        { message: '인증시간 만료', _errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (authCode !== parseInt(authorizationCode, 10)) {
+      const _errors = { message: '인증번호가 올바르지 않습니다' };
+      throw new HttpException(
+        { message: '인증번호 오류', _errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.generatePhoneNumberJWT(phoneNumber);
+  }
+
+  private generatePhoneNumberJWT(phoneNumber: string) {
+    const today = new Date();
+    const exp = new Date(today);
+    exp.setDate(today.getDate() + 15);
+    return jwt.sign(
+      {
+        phoneNumber,
+        exp: exp.getTime() / 1000,
+      },
+      env.JWT_TOKEN,
+    );
+  }
+
+  private generateUserJWT(user) {
     const today = new Date();
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);
@@ -101,7 +134,7 @@ export class UserService {
 
     const hash = hmac.finalize().toString(crypto.enc.Base64);
     const authCode = randNumber(100000, 999999);
-    const [message, x] = await Promise.all([
+    await Promise.all([
       fetch(
         `https://sens.apigw.ntruss.com/sms/v2/services/${env.NCP_SMS_KEY}/messages`,
         {

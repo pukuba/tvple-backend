@@ -35,4 +35,12 @@ export class CreateUserDto {
       '비밀번호는 6자 이상 40자 이하이며 하나 이상의 숫자 및 문자가 필요합니다.',
   })
   readonly password: string;
+
+  @ApiProperty({
+    type: String,
+    description: '전화번호 인증 토큰',
+    required: true,
+  })
+  @IsString()
+  readonly authCodeToken: string;
 }
