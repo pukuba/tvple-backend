@@ -1,4 +1,2 @@
-export interface ISendVerificationMessage {
-    phoneNumber: string
-    verificationCode: string
-}
+export * from "./jwt.d"
+export * from "./message.d"

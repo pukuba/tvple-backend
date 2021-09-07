@@ -30,10 +30,13 @@ export class CreateUserDto {
 
     @ApiProperty({ type: String, description: "유저 Password", required: true })
     @IsString()
-    @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,40}$/, {
-        message:
-            "비밀번호는 6자 이상 40자 이하이며 하나 이상의 숫자 및 문자가 필요합니다.",
-    })
+    @Matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,40}$/,
+        {
+            message:
+                "비밀번호는 6자 이상 40자 이하이며 하나 이상의 숫자 및 문자, 특수문자가 필요합니다.",
+        },
+    )
     readonly password: string
 
     @ApiProperty({
