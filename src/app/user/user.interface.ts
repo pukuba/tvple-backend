@@ -1,3 +1,3 @@
 export interface AuthCodeJwtResult {
-  phoneNumber: string;
+    phoneNumber: string
 }
