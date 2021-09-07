@@ -2,7 +2,7 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { getRepository, Repository } from 'typeorm';
-import env from "../config/env"
+import env from "../../config/env"
 import * as jwt from 'jsonwebtoken';
 import { CreateUserDto } from './dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
