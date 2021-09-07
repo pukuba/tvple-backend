@@ -6,6 +6,7 @@ import {
     Min,
     Max,
     IsNumber,
+    IsNumberString,
 } from "class-validator"
 import { ApiProperty } from "@nestjs/swagger"
 
@@ -26,8 +27,8 @@ export class CheckAuthCodeDto {
         description: "인증번호",
         required: true,
     })
-    @IsNumber()
+    @IsNumberString()
     @Min(100000)
     @Max(999999)
-    readonly authCode: number
+    readonly authCode: string
 }

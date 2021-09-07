@@ -3,8 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { UserEntity } from "src/shared/entities/users.entity"
 import { getRepository, Repository } from "typeorm"
 import { AuthCodeJwtResult } from "../auth.interface"
-import * as crypto from "crypto-js"
-import fetch from "node-fetch"
+import { MessageService } from "src/shared/services/message.service"
 import * as jwt from "jsonwebtoken"
 import { CreateUserDto, CreateAuthCodeDto, CheckAuthCodeDto } from "../dto"
 import { HttpException } from "@nestjs/common/exceptions/http.exception"
@@ -17,9 +16,10 @@ import { configService } from "src/shared/services/config.service"
 export class AuthService {
     constructor(
         private readonly redisService: RedisService,
+        private readonly messageService: MessageService,
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
-    ) {}
+    ) { }
 
     async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, password, id, authCodeToken } = dto
@@ -66,7 +66,16 @@ export class AuthService {
 
     async createAuthCode(dto: CreateAuthCodeDto) {
         const { phoneNumber } = dto
-        await this.authCodePost(phoneNumber)
+        const verificationCode = randNumber(100000, 999999).toString()
+        const requestResult = await this.messageService.sendVerificationMessage(
+            {
+                phoneNumber,
+                verificationCode,
+            },
+        )
+        if (requestResult.statusCode === "202") {
+            this.redisService.setData(phoneNumber, verificationCode, 180)
+        }
     }
 
     async checkAuthCode(dto: CheckAuthCodeDto) {
@@ -79,7 +88,7 @@ export class AuthService {
                 HttpStatus.BAD_REQUEST,
             )
         }
-        if (authCode !== parseInt(authorizationCode, 10)) {
+        if (authCode !== authorizationCode) {
             const _errors = { message: "인증번호가 올바르지 않습니다" }
             throw new HttpException(
                 { message: "인증번호 오류", _errors },
@@ -122,55 +131,5 @@ export class AuthService {
             token: this.generateUserJWT(user),
         }
         return { user: userRO }
-    }
-
-    private async authCodePost(phoneNumber: string) {
-        const timeStamp = Date.now().toString()
-        const hmac = crypto.algo.HMAC.create(
-            crypto.algo.SHA256,
-            configService.getEnv("NCP_SECRET_KEY"),
-        )
-        hmac.update("POST")
-        hmac.update(" ")
-        hmac.update(
-            `/sms/v2/services/${configService.getEnv("NCP_SMS_KEY")}/messages`,
-        )
-        hmac.update("\n")
-        hmac.update(timeStamp)
-        hmac.update("\n")
-        hmac.update(configService.getEnv("NCP_ACCESS_KEY"))
-
-        const hash = hmac.finalize().toString(crypto.enc.Base64)
-        const authCode = randNumber(100000, 999999)
-        await Promise.all([
-            fetch(
-                `https://sens.apigw.ntruss.com/sms/v2/services/${configService.getEnv(
-                    "env.NCP_SMS_KEY",
-                )}/messages`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json; charset=utf-8",
-                        "x-ncp-iam-access-key":
-                            configService.getEnv("NCP_ACCESS_KEY"),
-                        "x-ncp-apigw-timestamp": timeStamp,
-                        "x-ncp-apigw-signature-v2": hash,
-                    },
-                    body: JSON.stringify({
-                        type: "SMS",
-                        countryCode: "82",
-                        from: configService.getEnv("PHONE_NUMBER"),
-                        contentType: "COMM",
-                        content: `[폼 클레이] 본인확인 인증번호 \n[${authCode}]를 화면에 입력해주세요`,
-                        messages: [
-                            {
-                                to: phoneNumber,
-                            },
-                        ],
-                    }),
-                },
-            ),
-            this.redisService.setData(phoneNumber, authCode.toString(), 180),
-        ])
     }
 }

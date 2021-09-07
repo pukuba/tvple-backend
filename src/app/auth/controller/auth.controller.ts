@@ -5,6 +5,7 @@ import {
     Put,
     Delete,
     Param,
+    Query,
     Controller,
     UsePipes,
 } from "@nestjs/common"
@@ -39,13 +40,18 @@ export class AuthController {
         return this.userService.createAuthCode(userData)
     }
 
-    @UsePipes(new ValidationPipe())
-    @Post("code/check")
+    @Get("code")
     @ApiOperation({
         summary: "휴대번호 인증번호 확인 API",
         description: "휴대번호 인증번호 확인 API을 위한 API 입니다",
     })
-    async checkAuthCode(@Body() userData: CheckAuthCodeDto) {
-        return this.userService.checkAuthCode(userData)
+    async checkAuthCode(
+        @Query("phoneNumber") phoneNumber: string,
+        @Query("verificationCode") verificationCode: string,
+    ) {
+        return this.userService.checkAuthCode({
+            phoneNumber,
+            authCode: verificationCode,
+        })
     }
 }
