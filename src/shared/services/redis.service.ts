@@ -1,17 +1,17 @@
 import * as Redis from "ioredis"
 
-import { configService } from './config.service'
+import { configService } from "./config.service"
 
 export class RedisService {
     private redisConnection() {
         return new Redis({
-            host: configService.getEnv("REDIS_HOST")
+            host: configService.getEnv("REDIS_HOST"),
         })
     }
 
     async setData(key: string, value: string, expireTime?: number) {
         if (expireTime) {
-            await this.redisConnection().set(key, value, 'EX', expireTime)
+            await this.redisConnection().set(key, value, "EX", expireTime)
         } else {
             await this.redisConnection().set(key, value)
         }
@@ -19,7 +19,7 @@ export class RedisService {
 
     async setOnlyKey(key: string, expireTime?: number) {
         if (expireTime) {
-            await this.redisConnection().set(key, null, 'EX', expireTime)
+            await this.redisConnection().set(key, null, "EX", expireTime)
         } else {
             await this.redisConnection().set(key, null)
         }

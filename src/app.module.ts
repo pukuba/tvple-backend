@@ -19,5 +19,5 @@ import { RedisService } from "./shared/Services/redis.service"
     providers: [RedisService],
 })
 export class ApplicationModule {
-    constructor(private readonly connection: Connection) { }
+    constructor(private readonly connection: Connection) {}
 }

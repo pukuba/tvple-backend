@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from "@nestjs/common"
+import { Injectable, HttpStatus, BadRequestException } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { UserEntity } from "src/shared/entities/users.entity"
 import { getRepository, Repository } from "typeorm"
@@ -10,7 +10,7 @@ import { CreateUserDto, CreateAuthCodeDto, CheckAuthCodeDto } from "../dto"
 import { HttpException } from "@nestjs/common/exceptions/http.exception"
 import { validate } from "class-validator"
 import { randNumber } from "src/shared/lib"
-import { RedisService } from 'src/shared/Services/redis.service'
+import { RedisService } from "src/shared/Services/redis.service"
 import { configService } from "src/shared/services/config.service"
 
 @Injectable()
@@ -19,27 +19,10 @@ export class AuthService {
         private readonly redisService: RedisService,
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
-    ) { }
+    ) {}
 
-    async createUser(dto: CreateUserDto) {
+    async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, password, id, authCodeToken } = dto
-        try {
-            const jwtResult = jwt.verify(
-                authCodeToken,
-                configService.getEnv("JWT_TOKEN"),
-            ) as AuthCodeJwtResult
-            if (jwtResult.phoneNumber !== phoneNumber) {
-                throw ""
-            }
-        } catch {
-            throw new HttpException(
-                {
-                    message:
-                        "전화번호 인증이 만료되었거나 전화번호가 인증되지 않았습니다.",
-                },
-                HttpStatus.BAD_REQUEST,
-            )
-        }
         const qb = getRepository(UserEntity)
             .createQueryBuilder("user")
             .where("user.username = :username", { username })
@@ -48,13 +31,19 @@ export class AuthService {
 
         const user = await qb.getOne()
 
-        if (user) {
-            const errors = {
-                message: "username과 phone Number, id는 유니크 해야 합니다.",
-            }
-            throw new HttpException(
-                { message: "Input data validation failed", errors },
-                HttpStatus.BAD_REQUEST,
+        if (user)
+            throw new BadRequestException(
+                "이미 중복된 아이디, 닉네임, 휴대전화가 있습니다.",
+            )
+        try {
+            const jwtResult = jwt.verify(
+                authCodeToken,
+                configService.getEnv("JWT_TOKEN"),
+            ) as AuthCodeJwtResult
+            if (jwtResult.phoneNumber !== phoneNumber) throw ""
+        } catch {
+            throw new BadRequestException(
+                "전화번호 인증이 만료되었거나 전화번호가 인증되지 않았습니다.",
             )
         }
 
@@ -63,14 +52,9 @@ export class AuthService {
         newUser.phoneNumber = phoneNumber
         newUser.password = password
         newUser.id = id
-
         const error = await validate(newUser)
         if (error.length > 0) {
-            const _errors = { message: "Userinput is not valid." }
-            throw new HttpException(
-                { message: "Input data validation failed", _errors },
-                HttpStatus.BAD_REQUEST,
-            )
+            throw new BadRequestException("회원가입에 실패하였습니다.")
         } else {
             const [savedUser] = await Promise.all([
                 this.userRepository.save(newUser),
@@ -144,11 +128,13 @@ export class AuthService {
         const timeStamp = Date.now().toString()
         const hmac = crypto.algo.HMAC.create(
             crypto.algo.SHA256,
-            configService.getEnv("NCP_SECRET_KEY")
+            configService.getEnv("NCP_SECRET_KEY"),
         )
         hmac.update("POST")
         hmac.update(" ")
-        hmac.update(`/sms/v2/services/${configService.getEnv("NCP_SMS_KEY")}/messages`)
+        hmac.update(
+            `/sms/v2/services/${configService.getEnv("NCP_SMS_KEY")}/messages`,
+        )
         hmac.update("\n")
         hmac.update(timeStamp)
         hmac.update("\n")
@@ -158,12 +144,15 @@ export class AuthService {
         const authCode = randNumber(100000, 999999)
         await Promise.all([
             fetch(
-                `https://sens.apigw.ntruss.com/sms/v2/services/${configService.getEnv("env.NCP_SMS_KEY")}/messages`,
+                `https://sens.apigw.ntruss.com/sms/v2/services/${configService.getEnv(
+                    "env.NCP_SMS_KEY",
+                )}/messages`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json; charset=utf-8",
-                        "x-ncp-iam-access-key": configService.getEnv("NCP_ACCESS_KEY"),
+                        "x-ncp-iam-access-key":
+                            configService.getEnv("NCP_ACCESS_KEY"),
                         "x-ncp-apigw-timestamp": timeStamp,
                         "x-ncp-apigw-signature-v2": hash,
                     },
@@ -181,7 +170,7 @@ export class AuthService {
                     }),
                 },
             ),
-            this.redisService.setData(phoneNumber, authCode.toString(), 180)
+            this.redisService.setData(phoneNumber, authCode.toString(), 180),
         ])
     }
 }

@@ -11,18 +11,8 @@ import { AuthService } from "./service/auth.service"
 import { RedisService } from "src/shared/Services/redis.service"
 @Module({
     imports: [TypeOrmModule.forFeature([UserEntity])],
-    providers: [
-        AuthService,
-        RedisService
-    ],
+    providers: [AuthService, RedisService],
     controllers: [AuthController],
     exports: [AuthService],
 })
-export class AuthModule { }
-// implements NestModule {
-// public configure(consumer: MiddlewareConsumer) {
-//   consumer
-//     .apply(AuthMiddleware)
-//     .forRoutes({ path: 'user', method: RequestMethod.GET }, { path: 'path', method: RequestMethod.PUT })
-// }
-// }
+export class AuthModule {}
