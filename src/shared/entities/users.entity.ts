@@ -12,6 +12,10 @@ import * as argon2 from "argon2"
 
 @Entity("user")
 export class UserEntity {
+    constructor(partial: Partial<UserEntity>) {
+        Object.assign(this, partial)
+    }
+
     @PrimaryColumn()
     id: string
 

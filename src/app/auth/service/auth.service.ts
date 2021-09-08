@@ -9,36 +9,39 @@ import { UserEntity } from "src/shared/entities/users.entity"
 import { getRepository, Repository } from "typeorm"
 import { AuthCodeJwtResult } from "../auth.interface"
 
-import { CreateUserDto, CreateAuthCodeDto, CheckAuthCodeDto } from "../dto"
+import {
+    CreateUserDto,
+    CreateAuthCodeDto,
+    CheckAuthCodeDto,
+    LoginDto,
+} from "../dto"
 import { validate } from "class-validator"
 import { randNumber } from "src/shared/lib"
 import { JwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { RedisService } from "src/shared/Services/redis.service"
 import { MessageService } from "src/shared/services/message.service"
+import { UserRepository } from "src/shared/repositories/user.repository"
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtManipulationService,
         private readonly redisService: RedisService,
         private readonly messageService: MessageService,
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(UserRepository)
+        private readonly userRepository: UserRepository,
     ) {}
 
     async signUp(dto: CreateUserDto) {
-        const { username, phoneNumber, password, id, authCodeToken } = dto
-        const qb = getRepository(UserEntity)
-            .createQueryBuilder("user")
-            .where("user.username = :username", { username })
-            .orWhere("user.phoneNumber = :phoneNumber", { phoneNumber })
-            .orWhere("user.id = :id", { id })
+        const { username, phoneNumber, id, authCodeToken } = dto
 
-        const user = await qb.getOne()
-
-        if (user)
+        const user = await this.userRepository.find({
+            where: [{ username }, { phoneNumber }, { id }],
+        })
+        if (user.length > 0)
             throw new BadRequestException(
                 "이미 중복된 아이디, 혹은 닉네임, 휴대번호가 있습니다.",
             )
+
         const jwtResult = this.jwtService.decodeJwtToken(
             authCodeToken,
         ) as AuthCodeJwtResult
@@ -46,24 +49,12 @@ export class AuthService {
             throw new UnauthorizedException(
                 "휴대번호 인증이 만료되었거나 휴대번호 인증절차가 이루어지지 않았습니다.",
             )
-        const newUser = new UserEntity()
-        newUser.username = username
-        newUser.phoneNumber = phoneNumber
-        newUser.password = password
-        newUser.id = id
-        const error = await validate(newUser)
-        if (error.length > 0) {
-            throw new BadRequestException("회원가입에 실패하였습니다.")
-        } else {
-            await Promise.all([
-                this.userRepository.save(newUser),
-                this.redisService.deleteData(phoneNumber),
-            ])
-            return this.jwtService.generateJwtToken({
-                id,
-                exp: Math.floor(Date.now() / 1000) + 60 * 60,
-            })
-        }
+
+        await this.userRepository.createUser(dto)
+        return this.jwtService.generateJwtToken({
+            id: dto.id,
+            exp: Math.floor(Date.now() / 1000) + 60 * 60,
+        })
     }
 
     async createAuthCode(dto: CreateAuthCodeDto) {
@@ -91,4 +82,8 @@ export class AuthService {
             exp: Math.floor(Date.now() / 1000) + 60 * 15,
         })}`
     }
+
+    // async validateUser(dto: LoginDto): Promise<UserEntity> {
+    //     return await this.userRepository.
+    // }
 }
