@@ -45,5 +45,5 @@ export class CreateUserDto {
         required: true,
     })
     @IsString()
-    readonly authCodeToken: string
+    readonly verificationToken: string
 }

@@ -32,7 +32,7 @@ export class AuthService {
     ) {}
 
     async signUp(dto: CreateUserDto) {
-        const { username, phoneNumber, id, authCodeToken } = dto
+        const { username, phoneNumber, id, verificationToken } = dto
 
         const user = await this.userRepository.find({
             where: [{ username }, { phoneNumber }, { id }],
@@ -43,7 +43,7 @@ export class AuthService {
             )
 
         const jwtResult = this.jwtService.decodeJwtToken(
-            authCodeToken,
+            verificationToken,
         ) as AuthCodeJwtResult
         if (jwtResult.phoneNumber !== phoneNumber)
             throw new UnauthorizedException(
@@ -51,10 +51,18 @@ export class AuthService {
             )
 
         await this.userRepository.createUser(dto)
-        return this.jwtService.generateJwtToken({
+        const token = this.jwtService.generateJwtToken({
             id: dto.id,
             exp: Math.floor(Date.now() / 1000) + 60 * 60,
         })
+        const responseData = {
+            accessToken: token,
+            user: {
+                id,
+                username,
+            },
+        }
+        return responseData
     }
 
     async createAuthCode(dto: CreateAuthCodeDto) {
@@ -72,18 +80,36 @@ export class AuthService {
     }
 
     async checkAuthCode(dto: CheckAuthCodeDto) {
-        const { phoneNumber, authCode } = dto
+        const { phoneNumber, verificationCode } = dto
         const authorizationCode = await this.redisService.getData(phoneNumber)
-        if (authorizationCode !== authCode) {
+        if (authorizationCode !== verificationCode) {
             throw new BadRequestException("전화번호 인증에 실패하였습니다")
         }
-        return ` ${this.jwtService.generateJwtToken({
-            phoneNumber,
-            exp: Math.floor(Date.now() / 1000) + 60 * 15,
-        })}`
+        const responseData = {
+            verificationToken: ` ${this.jwtService.generateJwtToken({
+                phoneNumber,
+                exp: Math.floor(Date.now() / 1000) + 60 * 15,
+            })}`,
+        }
+        return responseData
     }
 
-    // async validateUser(dto: LoginDto): Promise<UserEntity> {
-    //     return await this.userRepository.
-    // }
+    async signIn(userEntity: UserEntity) {
+        const token: string = this.jwtService.generateJwtToken({
+            id: userEntity.id,
+            exp: Math.floor(Date.now() / 1000) + 60 * 15,
+        })
+        const responseData = {
+            accessToken: token,
+            user: {
+                id: userEntity.id,
+                username: userEntity.username,
+            },
+        }
+        return responseData
+    }
+
+    async validateUser(dto: LoginDto): Promise<UserEntity> {
+        return await this.userRepository.validateUser(dto)
+    }
 }

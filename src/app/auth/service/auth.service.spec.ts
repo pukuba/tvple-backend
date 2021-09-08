@@ -12,7 +12,6 @@ import { RedisService } from "src/shared/Services/redis.service"
 import { AuthModule } from "../auth.module"
 import { UserEntity } from "src/shared/entities/users.entity"
 import { UserRepository } from "src/shared/repositories/user.repository"
-import { createMemDB } from "test/test.db"
 describe("UserService", () => {
     let service: AuthService
     let db: Connection
@@ -53,19 +52,18 @@ describe("UserService", () => {
             equal(res, undefined)
         })
     })
-    let phoneNumberToken
+    let verificationToken
     describe("checkAuthCode", () => {
         it("should return jwt token", async () => {
-            const authorizationCode = await new RedisService().getData(
+            const verificationCode = await new RedisService().getData(
                 "01000000000",
             )
             const res = await service.checkAuthCode({
                 phoneNumber: "01000000000",
-                authCode: authorizationCode,
+                verificationCode: verificationCode,
             })
-            phoneNumberToken = res
-            equal(typeof phoneNumberToken, "string")
-            equal(phoneNumberToken.split(" ").length, 2)
+            verificationToken = res.verificationToken
+            equal("verificationToken" in verificationToken, true)
         })
     })
 
@@ -75,10 +73,11 @@ describe("UserService", () => {
                 id: "pukuba",
                 password: "test1234!",
                 phoneNumber: "01000000000",
-                authCodeToken: phoneNumberToken,
+                verificationToken: verificationToken,
                 username: "pukuba",
             })
-            equal(typeof res, "string")
+            equal(res.user.id, "pukuba")
+            equal(res.user.username, "pukuba")
         })
     })
 })

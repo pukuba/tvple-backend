@@ -30,5 +30,5 @@ export class CheckAuthCodeDto {
     @IsNumberString()
     @Min(100000)
     @Max(999999)
-    readonly authCode: string
+    readonly verificationCode: string
 }
