@@ -21,7 +21,7 @@ import { JwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 import { RedisService } from "src/shared/Services/redis.service"
 import { MessageService } from "src/shared/services/message.service"
 import { UserRepository } from "src/shared/repositories/user.repository"
-import { StatusOk } from "src/shared/Types"
+import { StatusOk } from "src/shared/types"
 
 @Injectable()
 export class AuthService {

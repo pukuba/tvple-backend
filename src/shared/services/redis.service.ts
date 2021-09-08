@@ -5,7 +5,7 @@ import { configService } from "./config.service"
 export class RedisService {
     private redisConnection() {
         return new Redis({
-            host: configService.getEnv("REDIS_HOST"),
+            host: configService.getEnv("REDIS_HOST") || "127.0.0.1",
         })
     }
 
