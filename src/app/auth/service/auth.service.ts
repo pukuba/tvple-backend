@@ -21,6 +21,8 @@ import { JwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 import { RedisService } from "src/shared/Services/redis.service"
 import { MessageService } from "src/shared/services/message.service"
 import { UserRepository } from "src/shared/repositories/user.repository"
+import { StatusOk } from "src/shared/Types"
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -29,7 +31,7 @@ export class AuthService {
         private readonly messageService: MessageService,
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
-    ) {}
+    ) { }
 
     async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, id, verificationToken } = dto
@@ -65,7 +67,7 @@ export class AuthService {
         return responseData
     }
 
-    async createAuthCode(dto: CreateAuthCodeDto) {
+    async createAuthCode(dto: CreateAuthCodeDto): Promise<StatusOk> {
         const { phoneNumber } = dto
         const verificationCode = randNumber(100000, 999999).toString()
         const requestResult = await this.messageService.sendVerificationMessage(
@@ -76,6 +78,12 @@ export class AuthService {
         )
         if (requestResult.statusCode === "202") {
             this.redisService.setData(phoneNumber, verificationCode, 180)
+            return {
+                status: "ok",
+                message: "본인확인 인증번호를 발송하였습니다",
+            }
+        } else {
+            throw new BadRequestException("NCP SENS transport failed")
         }
     }
 

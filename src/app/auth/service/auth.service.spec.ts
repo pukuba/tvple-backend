@@ -49,7 +49,7 @@ describe("UserService", () => {
             const res = await service.createAuthCode({
                 phoneNumber: "01000000000",
             })
-            equal(res, undefined)
+            equal(res.status, "ok")
         })
     })
     let verificationToken
@@ -63,7 +63,7 @@ describe("UserService", () => {
                 verificationCode: verificationCode,
             })
             verificationToken = res.verificationToken
-            equal("verificationToken" in verificationToken, true)
+            equal("verificationToken" in res, true)
         })
     })
 
