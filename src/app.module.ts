@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common"
+import { Module, Global } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { AppController } from "./app.controller"
 import { Connection } from "typeorm"
@@ -6,6 +6,7 @@ import { AuthModule } from "./app/auth/auth.module"
 import { ConfigModule } from "@nestjs/config"
 import { AuthService } from "./app/auth/service/auth.service"
 import { RedisService } from "./shared/Services/redis.service"
+@Global()
 @Module({
     imports: [
         ConfigModule.forRoot({
