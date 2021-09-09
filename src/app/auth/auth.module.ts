@@ -5,26 +5,25 @@ import {
     RequestMethod,
 } from "@nestjs/common"
 import { APP_GUARD } from "@nestjs/core"
-import { JwtModule } from '@nestjs/jwt'
+import { JwtModule } from "@nestjs/jwt"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { AuthController } from "./controller/auth.controller"
 import { UserEntity } from "../../shared/entities/user.entity"
 import { AuthService } from "./service/auth.service"
-import { PassportModule } from '@nestjs/passport'
+import { PassportModule } from "@nestjs/passport"
 import { UserRepository } from "src/shared/repositories/user.repository"
 import { JwtManipulationService } from "src/shared/services/jwt.manipulation.service"
-import { configService } from 'src/shared/Services/config.service'
+import { configService } from "src/shared/Services/config.service"
 import { MessageService } from "src/shared/services/message.service"
 import { RedisService } from "src/shared/Services/redis.service"
-import { JwtStrategy } from './strategy/jwt.strategy'
-
+import { JwtStrategy } from "./strategy/jwt.strategy"
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([UserEntity, UserRepository]),
         PassportModule,
         JwtModule.register({
-            secret: configService.getEnv('JWT_TOKEN'),
+            secret: configService.getEnv("JWT_TOKEN"),
         }),
     ],
     providers: [
@@ -32,10 +31,9 @@ import { JwtStrategy } from './strategy/jwt.strategy'
         RedisService,
         MessageService,
         JwtManipulationService,
-        JwtStrategy
-
+        JwtStrategy,
     ],
     controllers: [AuthController],
     exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

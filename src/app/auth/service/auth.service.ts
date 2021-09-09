@@ -32,7 +32,7 @@ export class AuthService {
         private readonly messageService: MessageService,
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
-    ) { }
+    ) {}
 
     async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, id, verificationToken } = dto
@@ -75,7 +75,7 @@ export class AuthService {
         const expireDate: number = decodedToken.exp
         const remainingSeconds = Math.round(expireDate - Date.now() / 1000)
         await this.redisService.setOnlyKey(
-            bearer.split(" ")[1],
+            `blacklist-${bearer.split(" ")[1]}`,
             remainingSeconds,
         )
         return { status: "ok", message: "토큰을 블랙리스트에 추가하였습니다" }

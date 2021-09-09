@@ -14,7 +14,7 @@ export class JwtManipulationService {
                     configService.getEnv("JWT_TOKEN"),
                 )
                 return decodedJwtData
-            } catch {
+            } catch (err) {
                 throw new BadRequestException("Token signature is not valid")
             }
         } catch {

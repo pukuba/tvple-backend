@@ -26,7 +26,7 @@ import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 @ApiTags("v1/auth")
 @Controller("v1/auth")
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor(private readonly authService: AuthService) {}
 
     @UsePipes(new ValidationPipe())
     @Post("sign-in")
