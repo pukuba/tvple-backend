@@ -18,6 +18,7 @@ import {
     CheckAuthCodeDto,
     LoginDto,
 } from "../dto"
+import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
 import { AuthService } from "../service/auth.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
@@ -77,7 +78,7 @@ export class AuthController {
     }
 
     @Delete("sign-out")
-    @UseGuards(AuthGuard("jwt"))
+    @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     async signOut(@Headers("authorization") bearer: string) {
         return this.authService.signOut(bearer)

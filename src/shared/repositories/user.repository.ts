@@ -16,7 +16,7 @@ import {
     LoginDto,
 } from "src/app/auth/dto"
 import { configService } from "../services/config.service"
-import { UserEntity } from "../entities/users.entity"
+import { UserEntity } from "../entities/user.entity"
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {

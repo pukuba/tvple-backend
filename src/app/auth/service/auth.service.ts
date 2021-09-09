@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { UserEntity } from "src/shared/entities/users.entity"
+import { UserEntity } from "src/shared/entities/user.entity"
 import { getRepository, Repository } from "typeorm"
 import { AuthCodeJwtResult } from "../auth.interface"
 
@@ -32,7 +32,7 @@ export class AuthService {
         private readonly messageService: MessageService,
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
-    ) {}
+    ) { }
 
     async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, id, verificationToken } = dto
