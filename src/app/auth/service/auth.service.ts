@@ -22,6 +22,7 @@ import { RedisService } from "src/shared/Services/redis.service"
 import { MessageService } from "src/shared/services/message.service"
 import { UserRepository } from "src/shared/repositories/user.repository"
 import { StatusOk } from "src/shared/types"
+import { JwtPayload } from "jsonwebtoken"
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
         private readonly messageService: MessageService,
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
-    ) { }
+    ) {}
 
     async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, id, verificationToken } = dto
@@ -46,7 +47,7 @@ export class AuthService {
 
         const jwtResult = this.jwtService.decodeJwtToken(
             verificationToken,
-        ) as AuthCodeJwtResult
+        ) as JwtPayload
         if (jwtResult.phoneNumber !== phoneNumber)
             throw new UnauthorizedException(
                 "휴대번호 인증이 만료되었거나 휴대번호 인증절차가 이루어지지 않았습니다.",
@@ -65,6 +66,19 @@ export class AuthService {
             },
         }
         return responseData
+    }
+
+    async signOut(bearer: string) {
+        const decodedToken = this.jwtService.decodeJwtToken(
+            bearer,
+        ) as JwtPayload
+        const expireDate: number = decodedToken.exp
+        const remainingSeconds = Math.round(expireDate - Date.now() / 1000)
+        await this.redisService.setOnlyKey(
+            bearer.split(" ")[1],
+            remainingSeconds,
+        )
+        return { status: "ok", message: "토큰을 블랙리스트에 추가하였습니다" }
     }
 
     async createAuthCode(dto: CreateAuthCodeDto): Promise<StatusOk> {

@@ -3,12 +3,15 @@ import {
     Post,
     Body,
     Put,
+    UseGuards,
     Delete,
     Param,
+    Headers,
     Query,
     Controller,
     UsePipes,
 } from "@nestjs/common"
+import { AuthGuard } from "@nestjs/passport"
 import {
     CreateUserDto,
     CreateAuthCodeDto,
@@ -22,7 +25,7 @@ import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 @ApiTags("v1/auth")
 @Controller("v1/auth")
 export class AuthController {
-    constructor(private readonly userService: AuthService) {}
+    constructor(private readonly authService: AuthService) { }
 
     @UsePipes(new ValidationPipe())
     @Post("sign-in")
@@ -33,8 +36,8 @@ export class AuthController {
     })
     @ApiBody({ type: LoginDto })
     async signIn(@Body() userData: LoginDto) {
-        const user = await this.userService.validateUser(userData)
-        return await this.userService.signIn(user)
+        const user = await this.authService.validateUser(userData)
+        return await this.authService.signIn(user)
     }
 
     @UsePipes(new ValidationPipe())
@@ -45,7 +48,7 @@ export class AuthController {
     })
     @ApiBody({ type: CreateUserDto })
     async signUp(@Body() userData: CreateUserDto) {
-        return this.userService.signUp(userData)
+        return this.authService.signUp(userData)
     }
 
     @UsePipes(new ValidationPipe())
@@ -55,7 +58,7 @@ export class AuthController {
         description: "휴대번호 인증번호 발송을 위한 API 입니다.",
     })
     async createAuthCode(@Body() userData: CreateAuthCodeDto) {
-        return this.userService.createAuthCode(userData)
+        return this.authService.createAuthCode(userData)
     }
 
     @Get("code")
@@ -67,9 +70,16 @@ export class AuthController {
         @Query("phoneNumber") phoneNumber: string,
         @Query("verificationCode") verificationCode: string,
     ) {
-        return this.userService.checkAuthCode({
+        return this.authService.checkAuthCode({
             phoneNumber,
             verificationCode,
         })
+    }
+
+    @Delete("sign-out")
+    @UseGuards(AuthGuard("jwt"))
+    @ApiBearerAuth()
+    async signOut(@Headers("authorization") bearer: string) {
+        return this.authService.signOut(bearer)
     }
 }
