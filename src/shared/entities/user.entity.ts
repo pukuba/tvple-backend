@@ -7,6 +7,7 @@ import {
     ManyToMany,
     OneToMany,
     PrimaryColumn,
+    Table
 } from "typeorm"
 import * as argon2 from "argon2"
 
@@ -16,16 +17,31 @@ export class UserEntity {
         Object.assign(this, partial)
     }
 
-    @PrimaryColumn()
+    @PrimaryColumn({
+        type: "varchar",
+        length: 20,
+        nullable: false,
+    })
     id: string
 
-    @Column()
+    @Column({
+        type: "varchar",
+        length: 20,
+        nullable: false,
+    })
     username: string
 
-    @Column()
+    @Column({
+        type: "varchar",
+        nullable: true,
+        length: 14
+    })
     phoneNumber: string
 
-    @Column()
+    @Column({
+        type: "binary",
+        length: 32
+    })
     password: string
 
     @BeforeInsert()
