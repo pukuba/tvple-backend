@@ -24,23 +24,24 @@ export class UserEntity {
     })
     id: string
 
-    @Column({
+    @PrimaryColumn({
         type: "varchar",
         length: 20,
         nullable: false,
     })
     username: string
 
-    @Column({
+    @PrimaryColumn({
         type: "varchar",
-        nullable: true,
-        length: 14
+        nullable: false,
+        length: 14,
     })
     phoneNumber: string
 
     @Column({
         type: "binary",
-        length: 32
+        length: 128,
+        nullable: false
     })
     password: string
 

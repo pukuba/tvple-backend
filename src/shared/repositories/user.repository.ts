@@ -48,7 +48,6 @@ export class UserRepository extends Repository<UserEntity> {
             phoneNumber: dto.phoneNumber,
             id: dto.id,
         })
-
         try {
             await this.save(newUser)
         } catch (error) {

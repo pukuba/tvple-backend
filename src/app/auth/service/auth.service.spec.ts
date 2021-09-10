@@ -10,25 +10,16 @@ import { JwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 import { MessageService } from "src/shared/services/message.service"
 import { RedisService } from "src/shared/Services/redis.service"
 import { AuthModule } from "../auth.module"
-import { UserEntity } from "src/shared/entities/users.entity"
+import { UserEntity } from "src/shared/entities/user.entity"
 import { UserRepository } from "src/shared/repositories/user.repository"
 describe("UserService", () => {
     let service: AuthService
     let db: Connection
 
     beforeAll(async () => {
-        // const db = await TypeOrmModule.forFeature([UserEntity, UserRepository])
-        // console.log(db)
-        // service = new AuthService(
-        //     new JwtManipulationService(),
-        //     new RedisService(),
-        //     new MessageService(),
-        //     new UserRepository(),
-        // )
         const module = await Test.createTestingModule({
             imports: [
                 AuthModule,
-                // Use the e2e_test database to run the tests
                 TypeOrmModule.forRoot({
                     type: "mysql",
                     username: "travis",
@@ -73,7 +64,7 @@ describe("UserService", () => {
                 id: "pukuba",
                 password: "test1234!",
                 phoneNumber: "01000000000",
-                verificationToken: verificationToken,
+                verificationToken,
                 username: "pukuba",
             })
             equal(res.user.id, "pukuba")
