@@ -59,11 +59,13 @@ export class UserRepository extends Repository<UserEntity> {
         try {
             return await this.findOneOrFail({
                 where: {
-                    phoneNumber: phoneNumber
-                }
+                    phoneNumber: phoneNumber,
+                },
             })
         } catch (err) {
             throw new NotFoundException("계정이 존재하지 않습니다.")
         }
     }
+
+
 }

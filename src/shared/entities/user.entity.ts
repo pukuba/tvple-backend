@@ -7,7 +7,7 @@ import {
     ManyToMany,
     OneToMany,
     PrimaryColumn,
-    Table
+    Table,
 } from "typeorm"
 import * as argon2 from "argon2"
 
@@ -41,7 +41,7 @@ export class UserEntity {
     @Column({
         type: "binary",
         length: 128,
-        nullable: false
+        nullable: false,
     })
     password: string
 

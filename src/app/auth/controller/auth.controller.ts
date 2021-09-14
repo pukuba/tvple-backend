@@ -94,4 +94,15 @@ export class AuthController {
     ) {
         return this.authService.findId({ verificationToken })
     }
+
+    @Post("reset-password")
+    @ApiOperation({
+        summary: "비밀번호 재설정",
+        description: "비밀번호 재설정을 위한 API 입니다.",
+    })
+    async resetPassword(
+        @Body() userData: CreateUserDto,
+    ) {
+        return this.authService.resetPassword(userData)
+    }
 }

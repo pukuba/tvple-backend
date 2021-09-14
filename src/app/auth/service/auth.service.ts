@@ -14,7 +14,8 @@ import {
     CreateAuthCodeDto,
     CheckAuthCodeDto,
     LoginDto,
-    FindIdDto
+    FindIdDto,
+    ResetPasswordDto
 } from "../dto"
 import { validate } from "class-validator"
 import { randNumber } from "src/shared/lib"
@@ -54,7 +55,13 @@ export class AuthService {
                 "휴대번호 인증이 만료되었거나 휴대번호 인증절차가 이루어지지 않았습니다.",
             )
 
-        await this.userRepository.createUser(dto)
+        const isBlackList = await this.redisService.getData(`blacklist-${verificationToken}`)
+        if (isBlackList !== null) throw new UnauthorizedException()
+        const exp = jwtResult.exp - Math.floor(Date.now() / 1000)
+        await Promise.all([
+            this.userRepository.createUser(dto),
+            this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp)
+        ])
         const token = this.jwtService.generateJwtToken({
             id: dto.id,
             exp: Math.floor(Date.now() / 1000) + 60 * 60,
@@ -119,9 +126,18 @@ export class AuthService {
 
     async findId(dto: FindIdDto): Promise<StatusOk> {
         const { verificationToken } = dto
-        const phoneNumber = this.jwtService.decodeJwtToken(verificationToken).phoneNumber
-        const responseData = await this.userRepository.getUserByPhoneNumber(phoneNumber)
-        return { status: "ok", message: `id는 ${responseData.id} 입니다` }
+        const jwtData = this.jwtService.decodeJwtToken(verificationToken)
+        const isBlackList = this.redisService.getData(`blacklist-${verificationToken}`)
+        if (isBlackList !== null) {
+            throw new UnauthorizedException()
+        }
+        const exp = jwtData.exp - Math.floor(Date.now() / 1000)
+        // const responseData = await
+        const [user] = await Promise.all([
+            this.userRepository.getUserByPhoneNumber(jwtData.phoneNumber),
+            this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp)
+        ])
+        return { status: "ok", message: `id는 ${user.id} 입니다` }
     }
 
     async signIn(userEntity: UserEntity) {
@@ -141,5 +157,12 @@ export class AuthService {
 
     async validateUser(dto: LoginDto): Promise<UserEntity> {
         return await this.userRepository.validateUser(dto)
+    }
+
+    async resetPassword(dto: ResetPasswordDto): Promise<StatusOk> {
+        const { verificationToken, password } = dto
+        const phoneNumber = this.jwtService.decodeJwtToken(verificationToken).phoneNumber
+        const user = await this.userRepository.getUserByPhoneNumber(phoneNumber)
+        return { status: "ok", message: `비밀번호 초기화가 완료되었습니다` }
     }
 }
