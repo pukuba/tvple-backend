@@ -81,4 +81,15 @@ export class UserRepository extends Repository<UserEntity> {
         user.password = hashedPassword
         return await this.save(user)
     }
+
+    async deleteUser(id: string) {
+        try {
+            const { affected } = await this.delete({
+                id,
+            })
+            if (!affected) throw new Error()
+        } catch (e) {
+            throw new NotFoundException("계정이 존재하지 않습니다")
+        }
+    }
 }

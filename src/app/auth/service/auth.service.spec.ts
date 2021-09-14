@@ -10,12 +10,10 @@ import { JwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 import { MessageService } from "src/shared/services/message.service"
 import { RedisService } from "src/shared/Services/redis.service"
 import { AuthModule } from "../auth.module"
-import { UserEntity } from "src/shared/entities/user.entity"
 import { UserRepository } from "src/shared/repositories/user.repository"
 describe("UserService", () => {
     let service: AuthService
-    let db: Connection
-
+    let db: UserRepository
     beforeAll(async () => {
         const module = await Test.createTestingModule({
             imports: [
@@ -28,8 +26,10 @@ describe("UserService", () => {
                     synchronize: true,
                 }),
             ],
+            providers: [UserRepository]
         }).compile()
         service = module.get<AuthService>(AuthService)
+        db = module.get<UserRepository>(UserRepository)
     })
 
     it("should be defined", () => {
@@ -69,6 +69,20 @@ describe("UserService", () => {
             })
             equal(res.user.id, "pukuba")
             equal(res.user.username, "pukuba")
+        })
+        it("should return error", async () => {
+            await db.deleteUser("pukuba")
+            try {
+                await service.signUp({
+                    id: "pukuba",
+                    password: "test1234!",
+                    phoneNumber: "01000000000",
+                    verificationToken,
+                    username: "pukuba",
+                })
+            } catch (e) {
+                equal(e.status, 401)
+            }
         })
     })
 })
