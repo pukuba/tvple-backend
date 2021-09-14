@@ -10,7 +10,11 @@ export class ResetPasswordDto {
     @IsString()
     readonly verificationToken: string
 
-    @ApiProperty({ type: String, description: "재설정할 비밀번호", required: true })
+    @ApiProperty({
+        type: String,
+        description: "재설정할 비밀번호",
+        required: true,
+    })
     @IsString()
     @Matches(
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,40}$/,

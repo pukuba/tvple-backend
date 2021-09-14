@@ -26,7 +26,7 @@ import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 @ApiTags("v1/auth")
 @Controller("v1/auth")
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor(private readonly authService: AuthService) {}
 
     @UsePipes(new ValidationPipe())
     @Post("sign-in")
@@ -89,9 +89,7 @@ export class AuthController {
         summary: "아이디 찾기",
         description: "아이디 찾기를 위한 API 입니다.",
     })
-    async findId(
-        @Query("verificationToken") verificationToken: string
-    ) {
+    async findId(@Query("verificationToken") verificationToken: string) {
         return this.authService.findId({ verificationToken })
     }
 
@@ -100,9 +98,7 @@ export class AuthController {
         summary: "비밀번호 재설정",
         description: "비밀번호 재설정을 위한 API 입니다.",
     })
-    async resetPassword(
-        @Body() userData: CreateUserDto,
-    ) {
+    async resetPassword(@Body() userData: CreateUserDto) {
         return this.authService.resetPassword(userData)
     }
 }

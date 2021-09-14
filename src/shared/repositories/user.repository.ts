@@ -65,8 +65,10 @@ export class UserRepository extends Repository<UserEntity> {
         }
     }
 
-    async updateUserPassword(phoneNumber: string, password: string): Promise<UserEntity> {
-
+    async updateUserPassword(
+        phoneNumber: string,
+        password: string,
+    ): Promise<UserEntity> {
         let user: UserEntity
         try {
             user = await this.findOneOrFail({
@@ -79,5 +81,4 @@ export class UserRepository extends Repository<UserEntity> {
         user.password = hashedPassword
         return await this.save(user)
     }
-
 }

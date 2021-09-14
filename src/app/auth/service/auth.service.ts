@@ -15,7 +15,7 @@ import {
     CheckAuthCodeDto,
     LoginDto,
     FindIdDto,
-    ResetPasswordDto
+    ResetPasswordDto,
 } from "../dto"
 import { validate } from "class-validator"
 import { randNumber } from "src/shared/lib"
@@ -34,7 +34,7 @@ export class AuthService {
         private readonly messageService: MessageService,
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
-    ) { }
+    ) {}
 
     async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, id, verificationToken } = dto
@@ -47,20 +47,20 @@ export class AuthService {
                 "이미 중복된 아이디, 혹은 닉네임, 휴대번호가 있습니다.",
             )
 
-        const jwtResult = this.jwtService.decodeJwtToken(
-            verificationToken,
-        )
+        const jwtResult = this.jwtService.decodeJwtToken(verificationToken)
         if (jwtResult.phoneNumber !== phoneNumber)
             throw new UnauthorizedException(
                 "휴대번호 인증이 만료되었거나 휴대번호 인증절차가 이루어지지 않았습니다.",
             )
 
-        const isBlackList = await this.redisService.getData(`blacklist-${verificationToken}`)
+        const isBlackList = await this.redisService.getData(
+            `blacklist-${verificationToken}`,
+        )
         if (isBlackList !== null) throw new UnauthorizedException()
         const exp = jwtResult.exp - Math.floor(Date.now() / 1000)
         await Promise.all([
             this.userRepository.createUser(dto),
-            this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp)
+            this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp),
         ])
         const token = this.jwtService.generateJwtToken({
             id: dto.id,
@@ -127,14 +127,16 @@ export class AuthService {
     async findId(dto: FindIdDto): Promise<StatusOk> {
         const { verificationToken } = dto
         const jwtData = this.jwtService.decodeJwtToken(verificationToken)
-        const isBlackList = this.redisService.getData(`blacklist-${verificationToken}`)
+        const isBlackList = this.redisService.getData(
+            `blacklist-${verificationToken}`,
+        )
         if (isBlackList !== null) {
             throw new UnauthorizedException()
         }
         const exp = jwtData.exp - Math.floor(Date.now() / 1000)
         const [user] = await Promise.all([
             this.userRepository.getUserByPhoneNumber(jwtData.phoneNumber),
-            this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp)
+            this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp),
         ])
         return { status: "ok", message: `id는 ${user.id} 입니다` }
     }
@@ -161,11 +163,19 @@ export class AuthService {
     async resetPassword(dto: ResetPasswordDto): Promise<StatusOk> {
         const { verificationToken, password } = dto
         const jwtResult = this.jwtService.decodeJwtToken(verificationToken)
-        const isBlackList = await this.redisService.getData(`blacklist-${verificationToken}`)
+        const isBlackList = await this.redisService.getData(
+            `blacklist-${verificationToken}`,
+        )
         if (isBlackList !== null) throw new UnauthorizedException()
         const exp = jwtResult.exp - Math.floor(Date.now() / 1000)
-        await this.userRepository.updateUserPassword(jwtResult.phoneNumber, password)
-        await this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp)
+        await this.userRepository.updateUserPassword(
+            jwtResult.phoneNumber,
+            password,
+        )
+        await this.redisService.setOnlyKey(
+            `blacklist-${verificationToken}`,
+            exp,
+        )
         return { status: "ok", message: `비밀번호 초기화가 완료되었습니다` }
     }
 }
