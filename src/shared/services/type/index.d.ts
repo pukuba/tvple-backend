@@ -1,2 +1,2 @@
-export * from "./jwt.d"
-export * from "./message.d"
+export * from "./jwt"
+export * from "./message"

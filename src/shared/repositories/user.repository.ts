@@ -58,14 +58,26 @@ export class UserRepository extends Repository<UserEntity> {
     async getUserByPhoneNumber(phoneNumber: string): Promise<UserEntity> {
         try {
             return await this.findOneOrFail({
-                where: {
-                    phoneNumber: phoneNumber,
-                },
+                phoneNumber: phoneNumber,
             })
         } catch (err) {
             throw new NotFoundException("계정이 존재하지 않습니다.")
         }
     }
 
+    async updateUserPassword(phoneNumber: string, password: string): Promise<UserEntity> {
+
+        let user: UserEntity
+        try {
+            user = await this.findOneOrFail({
+                phoneNumber: phoneNumber,
+            })
+        } catch (error) {
+            throw new NotFoundException("계정이 존재하지 않습니다")
+        }
+        const hashedPassword = await argon2.hash(password)
+        user.password = hashedPassword
+        return await this.save(user)
+    }
 
 }

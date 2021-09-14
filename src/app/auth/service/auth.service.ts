@@ -132,7 +132,6 @@ export class AuthService {
             throw new UnauthorizedException()
         }
         const exp = jwtData.exp - Math.floor(Date.now() / 1000)
-        // const responseData = await
         const [user] = await Promise.all([
             this.userRepository.getUserByPhoneNumber(jwtData.phoneNumber),
             this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp)
@@ -161,8 +160,12 @@ export class AuthService {
 
     async resetPassword(dto: ResetPasswordDto): Promise<StatusOk> {
         const { verificationToken, password } = dto
-        const phoneNumber = this.jwtService.decodeJwtToken(verificationToken).phoneNumber
-        const user = await this.userRepository.getUserByPhoneNumber(phoneNumber)
+        const jwtResult = this.jwtService.decodeJwtToken(verificationToken)
+        const isBlackList = await this.redisService.getData(`blacklist-${verificationToken}`)
+        if (isBlackList !== null) throw new UnauthorizedException()
+        const exp = jwtResult.exp - Math.floor(Date.now() / 1000)
+        await this.userRepository.updateUserPassword(jwtResult.phoneNumber, password)
+        await this.redisService.setOnlyKey(`blacklist-${verificationToken}`, exp)
         return { status: "ok", message: `비밀번호 초기화가 완료되었습니다` }
     }
 }
