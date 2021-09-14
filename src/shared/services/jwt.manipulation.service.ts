@@ -13,7 +13,7 @@ export class JwtManipulationService {
                     token.split(" ")[1],
                     configService.getEnv("JWT_TOKEN"),
                 )
-                return decodedJwtData
+                return decodedJwtData as jwt.JwtPayload
             } catch (err) {
                 throw new BadRequestException("Token signature is not valid")
             }

@@ -14,6 +14,7 @@ import {
     CreateAuthCodeDto,
     CheckAuthCodeDto,
     LoginDto,
+    FindIdDto
 } from "../dto"
 import { validate } from "class-validator"
 import { randNumber } from "src/shared/lib"
@@ -32,7 +33,7 @@ export class AuthService {
         private readonly messageService: MessageService,
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
-    ) {}
+    ) { }
 
     async signUp(dto: CreateUserDto) {
         const { username, phoneNumber, id, verificationToken } = dto
@@ -47,7 +48,7 @@ export class AuthService {
 
         const jwtResult = this.jwtService.decodeJwtToken(
             verificationToken,
-        ) as JwtPayload
+        )
         if (jwtResult.phoneNumber !== phoneNumber)
             throw new UnauthorizedException(
                 "휴대번호 인증이 만료되었거나 휴대번호 인증절차가 이루어지지 않았습니다.",
@@ -114,6 +115,13 @@ export class AuthService {
             })}`,
         }
         return responseData
+    }
+
+    async findId(dto: FindIdDto): Promise<StatusOk> {
+        const { verificationToken } = dto
+        const phoneNumber = this.jwtService.decodeJwtToken(verificationToken).phoneNumber
+        const responseData = await this.userRepository.getUserByPhoneNumber(phoneNumber)
+        return { status: "ok", message: `id는 ${responseData.id} 입니다` }
     }
 
     async signIn(userEntity: UserEntity) {

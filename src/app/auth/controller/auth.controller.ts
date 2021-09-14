@@ -83,4 +83,15 @@ export class AuthController {
     async signOut(@Headers("authorization") bearer: string) {
         return this.authService.signOut(bearer)
     }
+
+    @Get("find-id")
+    @ApiOperation({
+        summary: "아이디 찾기",
+        description: "아이디 찾기를 위한 API 입니다.",
+    })
+    async findId(
+        @Query("verificationToken") verificationToken: string
+    ) {
+        return this.authService.findId({ verificationToken })
+    }
 }

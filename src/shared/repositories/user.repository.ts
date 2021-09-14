@@ -54,4 +54,16 @@ export class UserRepository extends Repository<UserEntity> {
             throw new UnprocessableEntityException(error.errmsg)
         }
     }
+
+    async getUserByPhoneNumber(phoneNumber: string): Promise<UserEntity> {
+        try {
+            return await this.findOneOrFail({
+                where: {
+                    phoneNumber: phoneNumber
+                }
+            })
+        } catch (err) {
+            throw new NotFoundException("계정이 존재하지 않습니다.")
+        }
+    }
 }
