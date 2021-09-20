@@ -70,7 +70,6 @@ export class AuthService {
             accessToken: token,
             user: {
                 id,
-                username,
             },
         }
         return responseData
@@ -115,6 +114,7 @@ export class AuthService {
         if (authorizationCode !== verificationCode) {
             throw new BadRequestException("전화번호 인증에 실패하였습니다")
         }
+        await this.redisService.deleteData(phoneNumber)
         const responseData = {
             verificationToken: ` ${this.jwtService.generateJwtToken({
                 phoneNumber,
@@ -141,16 +141,15 @@ export class AuthService {
         return { status: "ok", message: `id는 ${user.id} 입니다` }
     }
 
-    async signIn(userEntity: UserEntity) {
+    async signIn(dto: LoginDto) {
         const token: string = this.jwtService.generateJwtToken({
-            id: userEntity.id,
+            id: dto.id,
             exp: Math.floor(Date.now() / 1000) + 60 * 15,
         })
         const responseData = {
             accessToken: token,
             user: {
-                id: userEntity.id,
-                username: userEntity.username,
+                id: dto.id,
             },
         }
         return responseData

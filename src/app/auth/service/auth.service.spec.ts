@@ -14,6 +14,7 @@ import { UserRepository } from "src/shared/repositories/user.repository"
 describe("UserService", () => {
     let service: AuthService
     let db: UserRepository
+    let token: string
     beforeAll(async () => {
         const module = await Test.createTestingModule({
             imports: [
@@ -26,12 +27,13 @@ describe("UserService", () => {
                     synchronize: true,
                 }),
             ],
-            providers: [UserRepository]
         }).compile()
         service = module.get<AuthService>(AuthService)
         db = module.get<UserRepository>(UserRepository)
     })
-
+    afterAll(async () => {
+        await db.deleteUser("pukuba")
+    })
     it("should be defined", () => {
         expect(service).toBeDefined()
     })
@@ -68,9 +70,8 @@ describe("UserService", () => {
                 username: "pukuba",
             })
             equal(res.user.id, "pukuba")
-            equal(res.user.username, "pukuba")
         })
-        it("should return error", async () => {
+        it("should return error status 401", async () => {
             await db.deleteUser("pukuba")
             try {
                 await service.signUp({
@@ -83,6 +84,24 @@ describe("UserService", () => {
             } catch (e) {
                 equal(e.status, 401)
             }
+        })
+    })
+    describe("signIn", () => {
+        it("Should result jwt token", async () => {
+            await db.createUser({
+                id: "pukuba",
+                password: "test1234!",
+                phoneNumber: "01000000000",
+                username: "pukuba",
+                verificationToken: "01010101010",
+            })
+            const res = await service.signIn({
+                id: "pukuba",
+                password: "test1234!",
+            })
+            equal(typeof res.accessToken, "string")
+            equal(res.user.id, "pukuba")
+            token = res.accessToken
         })
     })
 })
