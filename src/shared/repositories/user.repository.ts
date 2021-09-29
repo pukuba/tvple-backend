@@ -13,6 +13,7 @@ import {
     CreateUserDto,
     CreateAuthCodeDto,
     CheckAuthCodeDto,
+    DeleteUserDto,
     LoginDto,
 } from "src/app/auth/dto"
 import { configService } from "../services/config.service"
@@ -28,9 +29,7 @@ export class UserRepository extends Repository<UserEntity> {
         let user: UserEntity
         try {
             user = await this.findOneOrFail({
-                where: {
-                    id: dto.id,
-                },
+                id: dto.id,
             })
         } catch {
             throw new BadRequestException("계정이 존재하지 않습니다.")
@@ -58,10 +57,20 @@ export class UserRepository extends Repository<UserEntity> {
     async getUserByPhoneNumber(phoneNumber: string): Promise<UserEntity> {
         try {
             return await this.findOneOrFail({
-                phoneNumber: phoneNumber,
+                phoneNumber,
             })
         } catch (err) {
             throw new NotFoundException("계정이 존재하지 않습니다.")
+        }
+    }
+
+    async getUserById(id: string): Promise<UserEntity> {
+        try {
+            return await this.findOneOrFail({
+                id,
+            })
+        } catch (err) {
+            throw new NotFoundException("계정이 존재하지 않습니다")
         }
     }
 
@@ -82,10 +91,12 @@ export class UserRepository extends Repository<UserEntity> {
         return await this.save(user)
     }
 
-    async deleteUser(id: string) {
+    async deleteUser(dto: DeleteUserDto) {
         try {
+            const user = await this.validateUser(dto)
             const { affected } = await this.delete({
-                id,
+                id: user.id,
+                password: user.password,
             })
             if (!affected) throw new Error()
         } catch (e) {

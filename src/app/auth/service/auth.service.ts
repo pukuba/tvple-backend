@@ -16,6 +16,7 @@ import {
     LoginDto,
     FindIdDto,
     ResetPasswordDto,
+    DeleteUserDto,
 } from "../dto"
 import { validate } from "class-validator"
 import { randNumber } from "src/shared/lib"
@@ -76,9 +77,7 @@ export class AuthService {
     }
 
     async signOut(bearer: string) {
-        const decodedToken = this.jwtService.decodeJwtToken(
-            bearer,
-        ) as JwtPayload
+        const decodedToken = this.jwtService.decodeJwtToken(bearer)
         const expireDate: number = decodedToken.exp
         const remainingSeconds = Math.round(expireDate - Date.now() / 1000)
         await this.redisService.setOnlyKey(
@@ -176,5 +175,18 @@ export class AuthService {
             exp,
         )
         return { status: "ok", message: `비밀번호 초기화가 완료되었습니다` }
+    }
+
+    async deleteAccount(dto: DeleteUserDto, bearer: string): Promise<StatusOk> {
+        const { password, id } = dto
+        const decodedToken = this.jwtService.decodeJwtToken(bearer)
+        if (id !== decodedToken.id) {
+            throw new UnauthorizedException("계정정보가 일치하지 않습니다")
+        }
+        await this.userRepository.deleteUser({
+            id,
+            password,
+        })
+        return { status: "ok", message: `계정이 삭제되었습니다` }
     }
 }

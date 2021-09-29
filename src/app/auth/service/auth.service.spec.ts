@@ -32,7 +32,10 @@ describe("UserService", () => {
         db = module.get<UserRepository>(UserRepository)
     })
     afterAll(async () => {
-        await db.deleteUser("pukuba")
+        await db.deleteUser({
+            id: "pukuba",
+            password: "test1234!",
+        })
     })
     it("should be defined", () => {
         expect(service).toBeDefined()
@@ -72,7 +75,10 @@ describe("UserService", () => {
             equal(res.user.id, "pukuba")
         })
         it("should return error status 401", async () => {
-            await db.deleteUser("pukuba")
+            await db.deleteUser({
+                id: "pukuba",
+                password: "test1234!",
+            })
             try {
                 await service.signUp({
                     id: "pukuba",

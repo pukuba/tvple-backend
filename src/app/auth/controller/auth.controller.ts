@@ -16,6 +16,7 @@ import {
     CreateUserDto,
     CreateAuthCodeDto,
     CheckAuthCodeDto,
+    DeleteUserDto,
     LoginDto,
 } from "../dto"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
@@ -80,8 +81,27 @@ export class AuthController {
     @Delete("sign-out")
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
+    @ApiOperation({
+        summary: "로그아웃",
+        description: "로그아웃을 위한 API 입니다.",
+    })
     async signOut(@Headers("authorization") bearer: string) {
         return this.authService.signOut(bearer)
+    }
+
+    @UsePipes(new ValidationPipe())
+    @Delete("account")
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @ApiOperation({
+        summary: "계정 삭제",
+        description: "계정 삭제를 위한 API 입니다.",
+    })
+    async account(
+        @Body() userData: DeleteUserDto,
+        @Headers("authorization") bearer: string,
+    ) {
+        return this.authService.deleteAccount(userData, bearer)
     }
 
     @Get("find-id")

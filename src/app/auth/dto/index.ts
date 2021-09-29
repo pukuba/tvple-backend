@@ -1,6 +1,6 @@
 export { CreateUserDto } from "./create-user.dto"
 export { CreateAuthCodeDto } from "./create-auth-code.dto"
 export { CheckAuthCodeDto } from "./check-auth-code.dto"
-export { LoginDto } from "./login.dto"
+export { LoginDto, LoginDto as DeleteUserDto } from "./login.dto"
 export { FindIdDto } from "./find-id.dto"
 export { ResetPasswordDto } from "./reset-pw.dto"
