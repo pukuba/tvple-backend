@@ -40,7 +40,7 @@ export class UserEntity {
 
     @Column({
         type: "varchar",
-        length: 128,
+        length: 512,
         nullable: false,
     })
     password: string
@@ -48,5 +48,23 @@ export class UserEntity {
     @BeforeInsert()
     async hashPassword() {
         this.password = await argon2.hash(this.password)
+    }
+
+    @Column({
+        type: "text",
+        nullable: false,
+    })
+    profileImage: string
+
+    @Column({
+        type: "text",
+        nullable: false,
+    })
+    biography: string
+
+    @BeforeInsert()
+    fillDeafults() {
+        this.profileImage = ""
+        this.biography = ""
     }
 }
