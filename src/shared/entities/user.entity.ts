@@ -39,7 +39,7 @@ export class UserEntity {
     phoneNumber: string
 
     @Column({
-        type: "binary",
+        type: "varchar",
         length: 128,
         nullable: false,
     })

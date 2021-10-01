@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
+import { deepStrictEqual as equal } from "assert"
 
 describe("AppController", () => {
     let appController: AppController
@@ -15,8 +16,8 @@ describe("AppController", () => {
     })
 
     describe("root", () => {
-        it('should return "Server Running"', () => {
-            expect(appController.getHello()).toBe("Server Running")
+        it('should return "Server Running"', async () => {
+            equal(appController.getHello(), "Server Running")
         })
     })
 })

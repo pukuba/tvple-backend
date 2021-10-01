@@ -15,7 +15,7 @@ describe("UserService", () => {
     let service: AuthService
     let db: UserRepository
     let token: string
-    beforeAll(async () => {
+    before(async () => {
         const module = await Test.createTestingModule({
             imports: [
                 AuthModule,
@@ -30,15 +30,6 @@ describe("UserService", () => {
         }).compile()
         service = module.get<AuthService>(AuthService)
         db = module.get<UserRepository>(UserRepository)
-    })
-    afterAll(async () => {
-        await db.deleteUser({
-            id: "pukuba",
-            password: "test1234!",
-        })
-    })
-    it("should be defined", () => {
-        expect(service).toBeDefined()
     })
     describe("createAuthCode", () => {
         it("should return void", async () => {
@@ -93,7 +84,7 @@ describe("UserService", () => {
         })
     })
     describe("signIn", () => {
-        it("Should result jwt token", async () => {
+        it("Should be return jwt token", async () => {
             await db.createUser({
                 id: "pukuba",
                 password: "test1234!",
@@ -108,6 +99,19 @@ describe("UserService", () => {
             equal(typeof res.accessToken, "string")
             equal(res.user.id, "pukuba")
             token = res.accessToken
+        })
+    })
+    describe("deleteAccount", () => {
+        it("Should be return status ok", async () => {
+            const res = await service.deleteAccount(
+                {
+                    id: "pukuba",
+                    password: "test1234!",
+                },
+                `Bearer ${token}`,
+            )
+            equal(res.status, "ok")
+            equal(res.message, "계정이 삭제되었습니다")
         })
     })
 })

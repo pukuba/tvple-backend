@@ -98,7 +98,7 @@ export class UserRepository extends Repository<UserEntity> {
                 id: user.id,
                 password: user.password,
             })
-            if (!affected) throw new Error()
+            if (affected === 0) throw new Error()
         } catch (e) {
             throw new NotFoundException("계정이 존재하지 않습니다")
         }
