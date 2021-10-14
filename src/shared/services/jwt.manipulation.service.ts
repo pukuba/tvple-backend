@@ -5,15 +5,16 @@ import * as jwt from "jsonwebtoken"
 import { configService } from "./config.service"
 import { IGenerateJwtToken } from "./type"
 export class JwtManipulationService {
-    decodeJwtToken(token: string) {
+    decodeJwtToken(token: string, property: string = "all") {
         try {
             if (!token) throw new Error()
             try {
                 const decodedJwtData = jwt.verify(
                     token.split(" ")[1],
                     configService.getEnv("JWT_TOKEN"),
-                )
-                return decodedJwtData as jwt.JwtPayload
+                ) as jwt.JwtPayload
+                if (property === "all") return decodedJwtData
+                else return decodedJwtData[property]
             } catch (err) {
                 throw new BadRequestException("Token signature is not valid")
             }

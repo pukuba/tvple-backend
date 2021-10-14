@@ -6,7 +6,6 @@ import {
 } from "@nestjs/common"
 
 import { Repository, EntityRepository } from "typeorm"
-import * as jwt from "jsonwebtoken"
 import * as argon2 from "argon2"
 
 import {
