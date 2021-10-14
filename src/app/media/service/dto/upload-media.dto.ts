@@ -9,7 +9,7 @@ export class UploadMediaDto {
     })
     @IsNotEmpty()
     @Length(3, 75)
-    name: string
+    title: string
 
     @ApiProperty({
         required: true,

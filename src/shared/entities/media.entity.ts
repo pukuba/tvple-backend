@@ -51,7 +51,7 @@ export class MediaEntity {
         length: 80,
         nullable: false,
     })
-    name: string
+    title: string
 
     @BeforeInsert()
     setId() {
