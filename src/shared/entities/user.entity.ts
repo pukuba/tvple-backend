@@ -54,6 +54,12 @@ export class UserEntity {
         type: "text",
         nullable: false,
     })
+    link: string
+
+    @Column({
+        type: "text",
+        nullable: false,
+    })
     profileImage: string
 
     @Column({
@@ -66,5 +72,6 @@ export class UserEntity {
     fillDeafults() {
         this.profileImage = ""
         this.biography = ""
+        this.link = ""
     }
 }
