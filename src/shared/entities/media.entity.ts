@@ -53,8 +53,15 @@ export class MediaEntity {
     })
     title: string
 
+    @Column({
+        type: "date",
+        nullable: false,
+    })
+    date: Date
+
     @BeforeInsert()
     setId() {
         this.mediaId = shortid.generate()
+        this.date = new Date()
     }
 }

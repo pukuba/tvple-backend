@@ -27,3 +27,7 @@ export class JwtManipulationService {
         return jwt.sign(tokenInfo, configService.getEnv("JWT_TOKEN"))
     }
 }
+
+const jwtManipulationService = new JwtManipulationService()
+
+export { jwtManipulationService }
