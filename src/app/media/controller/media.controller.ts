@@ -12,7 +12,10 @@ import {
     Req,
     UsePipes,
     BadRequestException,
+    UseInterceptors,
+    UploadedFile,
 } from "@nestjs/common"
+import { FileInterceptor } from "@nestjs/platform-express"
 import { AuthGuard } from "@nestjs/passport"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
@@ -26,49 +29,13 @@ import { MediaService } from "../service/media.service"
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
 
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard("jwt"))
+    // @ApiBearerAuth()
+    // @UseGuards(AuthGuard("jwt"))
     @Post("")
+    @UseInterceptors(FileInterceptor("file"))
     @ApiOperation({ summary: "upload media" })
-    async uploadMedia(@Headers("authorization") bearer: string, @Req() req) {
-        return new Promise((resolve, reject) => {
-            const payload: any = {}
-            let media: Buffer
-
-            const fileHandler = async (
-                _field,
-                file,
-                _filename,
-                _encoding,
-                mimetype,
-            ) => {
-                if (mimetype !== "video/mp4") {
-                    reject(new BadRequestException("File must be mp4"))
-                    return
-                }
-                file.pipe(concat((buffer) => (media = buffer)))
-            }
-
-            const mpForm = req.multipart(fileHandler, async (error) => {
-                if (error) {
-                    reject(
-                        new BadRequestException("Not valid multipart request"),
-                    )
-                }
-                try {
-                    const id = jwtManipulationService.decodeJwtToken(
-                        bearer,
-                        "id",
-                    )
-                    this.mediaService.uploadMedia(id, payload, media)
-                } catch (e) {
-                    reject(e)
-                }
-            })
-
-            mpForm.on("field", (key, value) => {
-                payload[key] = value
-            })
-        })
+    async uploadMedia(@UploadedFile() file, @Body() body) {
+        return this.mediaService.uploadMedia("id", file, body)
+        //@Headers("authorization") bearer: string,
     }
 }

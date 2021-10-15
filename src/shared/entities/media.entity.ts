@@ -43,6 +43,7 @@ export class MediaEntity {
         type: "varchar",
         length: 2000,
         nullable: false,
+        default: "",
     })
     description: string
 
@@ -50,6 +51,7 @@ export class MediaEntity {
         type: "varchar",
         length: 80,
         nullable: false,
+        default: "default title",
     })
     title: string
 

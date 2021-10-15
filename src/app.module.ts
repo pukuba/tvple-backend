@@ -12,6 +12,7 @@ import { ConfigModule } from "@nestjs/config"
 import { AuthService } from "./app/auth/service/auth.service"
 import { RedisService } from "./shared/Services/redis.service"
 import { BlacklistMiddleware } from "src/shared/Middleware/blacklist.middleware"
+import { MediaModule } from "./app/media/media.module"
 @Global()
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { BlacklistMiddleware } from "src/shared/Middleware/blacklist.middleware"
         }),
         TypeOrmModule.forRoot(),
         AuthModule,
+        MediaModule,
     ],
     controllers: [AppController],
     providers: [RedisService],

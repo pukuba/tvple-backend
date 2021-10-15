@@ -17,7 +17,7 @@ import { configService } from "src/shared/Services/config.service"
 import { MessageService } from "src/shared/services/message.service"
 import { RedisService } from "src/shared/Services/redis.service"
 import { JwtStrategy } from "./strategy/jwt.strategy"
-
+import { JwtAuthGuard } from "src/shared/guards/role.guard"
 @Module({
     imports: [
         TypeOrmModule.forFeature([UserEntity, UserRepository]),
