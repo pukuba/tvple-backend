@@ -44,7 +44,7 @@ export class MediaService {
                 }
                 try {
                     const url = this.awsService.uploadFile(
-                        file.name,
+                        `${Date.now()}-${file.originalname}`,
                         "media",
                         file.buffer,
                     )

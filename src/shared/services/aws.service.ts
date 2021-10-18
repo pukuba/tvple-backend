@@ -41,7 +41,6 @@ export class AwsService {
         )
         return `${configService.getEnv("AWS_END_POINT")}/${configService.getEnv(
             "AWS_BUCKET",
-        )}/${directory}/${fileName},
-        `
+        )}/${directory}/${fileName}`
     }
 }
