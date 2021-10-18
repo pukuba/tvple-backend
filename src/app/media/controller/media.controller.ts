@@ -16,7 +16,13 @@ import {
 } from "@nestjs/common"
 import { FileInterceptor } from "@nestjs/platform-express"
 import { AuthGuard } from "@nestjs/passport"
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
+import {
+    ApiBearerAuth,
+    ApiTags,
+    ApiOperation,
+    ApiBody,
+    ApiConsumes,
+} from "@nestjs/swagger"
 
 // Other dependencies
 import * as concat from "concat-stream"
@@ -26,6 +32,7 @@ import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 import { MediaService } from "../service/media.service"
+import { UploadMediaDto } from "../service/dto"
 
 @ApiTags("v1/media")
 @Controller("v1/media")
@@ -37,6 +44,8 @@ export class MediaController {
     @Post("")
     @UseInterceptors(FileInterceptor("file"))
     @ApiOperation({ summary: "upload media" })
+    @ApiConsumes("multipart/form-data")
+    @ApiBody({ type: UploadMediaDto })
     async uploadMedia(
         @Headers("authorization") bearer: string,
         @UploadedFile() file,
@@ -54,4 +63,8 @@ export class MediaController {
     async getMedia(@Query("id") id: string) {
         return this.mediaService.getMedia(id)
     }
+
+    @Get("/all")
+    @ApiOperation({ summary: "get all media" })
+    async getAllMedia() {}
 }

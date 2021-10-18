@@ -12,14 +12,14 @@ import {
     Controller,
     UsePipes,
 } from "@nestjs/common"
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
+import { ApiBearerAuth, ApiTags, ApiOperation } from "@nestjs/swagger"
 import { AuthGuard } from "@nestjs/passport"
 
 // Local files
 import {
     CreateUserDto,
     CreateAuthCodeDto,
-    CheckAuthCodeDto,
+    ResetPasswordDto,
     DeleteUserDto,
     LoginDto,
 } from "../dto"
@@ -39,7 +39,6 @@ export class AuthController {
         description:
             "로그인을 윈한 API 입니다. \naccess 토큰과 유저 정보를 반환합니다.",
     })
-    @ApiBody({ type: LoginDto })
     async signIn(@Body() userData: LoginDto) {
         const user = await this.authService.validateUser(userData)
         return await this.authService.signIn(user)
@@ -51,7 +50,6 @@ export class AuthController {
         summary: "회원가입",
         description: "회원가입을 위한 API 입니다.",
     })
-    @ApiBody({ type: CreateUserDto })
     async signUp(@Body() userData: CreateUserDto) {
         return this.authService.signUp(userData)
     }
@@ -121,7 +119,7 @@ export class AuthController {
         summary: "비밀번호 재설정",
         description: "비밀번호 재설정을 위한 API 입니다.",
     })
-    async resetPassword(@Body() userData: CreateUserDto) {
+    async resetPassword(@Body() userData: ResetPasswordDto) {
         return this.authService.resetPassword(userData)
     }
 }
