@@ -1,3 +1,4 @@
+// Nest dependencies
 import {
     Injectable,
     HttpStatus,
@@ -5,25 +6,28 @@ import {
     UnauthorizedException,
 } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { UserEntity } from "src/shared/entities/user.entity"
+
+// Other dependencies
+import { JwtPayload } from "jsonwebtoken"
+import { validate } from "class-validator"
 import { getRepository, Repository } from "typeorm"
 
-import { File } from "src/shared/services/type"
-import { UploadMediaDto } from "./dto/upload-media.dto"
-import { validate } from "class-validator"
-import { randNumber } from "src/shared/lib"
-import { JwtManipulationService } from "src/shared/services/jwt.manipulation.service"
-import { RedisService } from "src/shared/Services/redis.service"
-import { MessageService } from "src/shared/services/message.service"
-import { UserRepository } from "src/shared/repositories/user.repository"
+// Local files
 import { StatusOk } from "src/shared/types"
-import { JwtPayload } from "jsonwebtoken"
+import { UploadMediaDto } from "./dto/upload-media.dto"
 import { AwsService } from "src/shared/services/aws.service"
+import { MediaRepository } from "src/shared/repositories/media.repository"
+import { File } from "src/shared/services/type"
+import { JwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { MediaEntity } from "src/shared/entities/media.entity"
 
 @Injectable()
 export class MediaService {
-    constructor(private readonly awsService: AwsService) {}
+    constructor(
+        private readonly awsService: AwsService,
+        @InjectRepository(MediaRepository)
+        private readonly mediaRepository: MediaRepository,
+    ) {}
 
     async uploadMedia(userId: string, file: File, payload: UploadMediaDto) {
         payload.title = payload.title.replace(/^\s+|\s+$/g, "")
@@ -38,18 +42,23 @@ export class MediaService {
                 if (errors.length > 0) {
                     throw new BadRequestException(errors)
                 }
-                let media: MediaEntity
                 try {
                     const url = this.awsService.uploadFile(
                         file.name,
                         "media",
                         file.buffer,
                     )
-                    return url
-                } catch {}
+                    const newMedia: MediaEntity =
+                        await this.mediaRepository.uploadMedia(
+                            userId,
+                            payload,
+                            url,
+                        )
+                    return newMedia
+                } catch {
+                    throw new BadRequestException("Error uploading file")
+                }
             },
         )
-        const res = this.awsService.uploadFile(file.name, "media", file.buffer)
-        return res
     }
 }

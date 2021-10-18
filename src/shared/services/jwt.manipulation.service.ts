@@ -5,7 +5,7 @@ import * as jwt from "jsonwebtoken"
 import { configService } from "./config.service"
 import { IGenerateJwtToken } from "./type"
 export class JwtManipulationService {
-    decodeJwtToken(token: string, property: string = "all") {
+    decodeJwtToken(token: string, property = "all") {
         try {
             if (!token) throw new Error()
             try {

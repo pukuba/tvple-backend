@@ -34,13 +34,20 @@ import { MediaService } from "../service/media.service"
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
 
-    // @ApiBearerAuth()
-    // @UseGuards(AuthGuard("jwt"))
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard("jwt"))
     @Post("")
     @UseInterceptors(FileInterceptor("file"))
     @ApiOperation({ summary: "upload media" })
-    async uploadMedia(@UploadedFile() file, @Body() body) {
-        return this.mediaService.uploadMedia("id", file, body)
-        //@Headers("authorization") bearer: string,
+    async uploadMedia(
+        @Headers("authorization") bearer: string,
+        @UploadedFile() file,
+        @Body() body,
+    ) {
+        return this.mediaService.uploadMedia(
+            jwtManipulationService.decodeJwtToken(bearer, "id"),
+            file,
+            body,
+        )
     }
 }
