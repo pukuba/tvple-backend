@@ -1,3 +1,4 @@
+// Nest dependencies
 import {
     Get,
     Post,
@@ -11,7 +12,10 @@ import {
     Controller,
     UsePipes,
 } from "@nestjs/common"
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
 import { AuthGuard } from "@nestjs/passport"
+
+// Local files
 import {
     CreateUserDto,
     CreateAuthCodeDto,
@@ -20,7 +24,6 @@ import {
     LoginDto,
 } from "../dto"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
 import { AuthService } from "../service/auth.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 

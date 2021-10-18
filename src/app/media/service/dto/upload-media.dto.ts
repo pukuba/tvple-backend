@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger"
 
-import { IsNotEmpty, IsMongoId, Length } from "class-validator"
+import { IsNotEmpty, Length } from "class-validator"
 
 export class UploadMediaDto {
     @ApiProperty({
         required: true,
-        example: "post name",
+        example: "media name",
     })
     @IsNotEmpty()
     @Length(3, 75)
@@ -13,7 +13,7 @@ export class UploadMediaDto {
 
     @ApiProperty({
         required: true,
-        example: "post description",
+        example: "media description",
     })
     @Length(0, 2000)
     description: string

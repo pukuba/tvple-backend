@@ -1,3 +1,4 @@
+// Nest dependencies
 import {
     Injectable,
     HttpStatus,
@@ -5,10 +6,13 @@ import {
     UnauthorizedException,
 } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { UserEntity } from "src/shared/entities/user.entity"
-import { getRepository, Repository } from "typeorm"
-import { AuthCodeJwtResult } from "../auth.interface"
 
+// Other dependencies
+import { getRepository, Repository } from "typeorm"
+import { validate } from "class-validator"
+import { JwtPayload } from "jsonwebtoken"
+
+// Local files
 import {
     CreateUserDto,
     CreateAuthCodeDto,
@@ -18,14 +22,13 @@ import {
     ResetPasswordDto,
     DeleteUserDto,
 } from "../dto"
-import { validate } from "class-validator"
+import { UserEntity } from "src/shared/entities/user.entity"
 import { randNumber } from "src/shared/lib"
 import { JwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { RedisService } from "src/shared/Services/redis.service"
 import { MessageService } from "src/shared/services/message.service"
 import { UserRepository } from "src/shared/repositories/user.repository"
 import { StatusOk } from "src/shared/types"
-import { JwtPayload } from "jsonwebtoken"
 
 @Injectable()
 export class AuthService {

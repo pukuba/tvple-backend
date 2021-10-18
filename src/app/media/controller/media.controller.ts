@@ -1,3 +1,4 @@
+// Nest dependencies
 import {
     Get,
     Post,
@@ -17,9 +18,13 @@ import {
 } from "@nestjs/common"
 import { FileInterceptor } from "@nestjs/platform-express"
 import { AuthGuard } from "@nestjs/passport"
-import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger"
+
+// Other dependencies
 import * as concat from "concat-stream"
+
+// Local files
+import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 import { MediaService } from "../service/media.service"
