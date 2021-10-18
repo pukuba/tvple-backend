@@ -61,4 +61,8 @@ export class MediaService {
             },
         )
     }
+
+    getMedia(mediaId: string) {
+        return this.mediaRepository.getMediaByMediaId(mediaId)
+    }
 }

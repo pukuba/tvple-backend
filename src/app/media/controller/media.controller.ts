@@ -11,8 +11,6 @@ import {
     Query,
     Controller,
     Req,
-    UsePipes,
-    BadRequestException,
     UseInterceptors,
     UploadedFile,
 } from "@nestjs/common"
@@ -49,5 +47,11 @@ export class MediaController {
             file,
             body,
         )
+    }
+
+    @Get("")
+    @ApiOperation({ summary: "get media" })
+    async getMedia(@Query("id") id: string) {
+        return this.mediaService.getMedia(id)
     }
 }
