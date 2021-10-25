@@ -61,9 +61,23 @@ export class MediaEntity {
     })
     date: Date
 
+    @Column({
+        type: "integer",
+        nullable: false,
+    })
+    likes: number
+
+    @Column({
+        type: "integer",
+        nullable: false,
+    })
+    views: number
+
     @BeforeInsert()
     setId() {
         this.mediaId = shortid.generate()
         this.date = new Date()
+        this.views = 0
+        this.likes = 0
     }
 }

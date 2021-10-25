@@ -12,6 +12,7 @@ import {
     Controller,
     Req,
     UseInterceptors,
+    Ip,
     UploadedFile,
 } from "@nestjs/common"
 import { FileInterceptor } from "@nestjs/platform-express"
@@ -33,6 +34,7 @@ import { jwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 import { MediaService } from "../service/media.service"
 import { UploadMediaDto } from "../service/dto"
+import { query } from "express"
 
 @ApiTags("v1/media")
 @Controller("v1/media")
@@ -60,11 +62,13 @@ export class MediaController {
 
     @Get("")
     @ApiOperation({ summary: "get media" })
-    async getMedia(@Query("id") id: string) {
-        return this.mediaService.getMedia(id)
+    async getMedia(@Query("id") id: string, @Ip() ip) {
+        return this.mediaService.getMedia(id, ip)
     }
 
-    @Get("/all")
+    @Get("/search")
     @ApiOperation({ summary: "get all media" })
-    async getAllMedia() {}
+    async searchMedia(@Query() { page, keyword }) {
+        return this.mediaService.searchMedia(page, keyword)
+    }
 }

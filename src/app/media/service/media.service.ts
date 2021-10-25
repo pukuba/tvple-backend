@@ -18,13 +18,14 @@ import { UploadMediaDto } from "./dto/upload-media.dto"
 import { AwsService } from "src/shared/services/aws.service"
 import { MediaRepository } from "src/shared/repositories/media.repository"
 import { File } from "src/shared/services/type"
-import { JwtManipulationService } from "src/shared/services/jwt.manipulation.service"
+import { RedisService } from "src/shared/Services/redis.service"
 import { MediaEntity } from "src/shared/entities/media.entity"
 
 @Injectable()
 export class MediaService {
     constructor(
         private readonly awsService: AwsService,
+        private readonly redisService: RedisService,
         @InjectRepository(MediaRepository)
         private readonly mediaRepository: MediaRepository,
     ) {}
@@ -62,7 +63,18 @@ export class MediaService {
         )
     }
 
-    getMedia(mediaId: string) {
-        return this.mediaRepository.getMediaByMediaId(mediaId)
+    async getMedia(mediaId: string, ip: string) {
+        const view = await this.redisService.getData(`${mediaId}${ip}`)
+        if (view === null) {
+            await Promise.all([
+                this.redisService.setOnlyKey(`${mediaId}${ip}`, 3600),
+                this.mediaRepository.updateMediaViewCount(mediaId, 1),
+            ])
+        }
+        return await this.mediaRepository.getMediaByMediaId(mediaId)
+    }
+
+    async searchMedia(page: number, keyword: string) {
+        return await this.mediaRepository.searchMedia(page, keyword)
     }
 }

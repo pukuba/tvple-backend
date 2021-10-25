@@ -68,10 +68,17 @@ export class UserEntity {
     })
     biography: string
 
+    @Column({
+        type: "integer",
+        nullable: false,
+    })
+    point: number
+
     @BeforeInsert()
     fillDeafults() {
         this.profileImage = ""
         this.biography = ""
         this.link = ""
+        this.point = 0
     }
 }
