@@ -13,12 +13,11 @@ import { validate } from "class-validator"
 import { getRepository, Repository } from "typeorm"
 
 // Local files
-import { StatusOk } from "src/shared/types"
 import { UploadMediaDto } from "./dto/upload-media.dto"
 import { AwsService } from "src/shared/services/aws.service"
 import { MediaRepository } from "src/shared/repositories/media.repository"
 import { File } from "src/shared/services/type"
-import { RedisService } from "src/shared/Services/redis.service"
+import { RedisService } from "src/shared/services/redis.service"
 import { MediaEntity } from "src/shared/entities/media.entity"
 
 @Injectable()

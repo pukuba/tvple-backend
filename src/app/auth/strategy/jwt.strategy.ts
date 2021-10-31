@@ -9,9 +9,9 @@ import {
 
 import { ExtractJwt, Strategy } from "passport-jwt"
 
-import { UserRepository } from "src/shared/Repositories/user.repository"
-import { configService } from "src/shared/Services/config.service"
-import { UserEntity } from "src/shared/Entities/user.entity"
+import { UserRepository } from "src/shared/repositories/user.repository"
+import { configService } from "src/shared/services/config.service"
+import { UserEntity } from "src/shared/entities/user.entity"
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

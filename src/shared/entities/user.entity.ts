@@ -9,7 +9,7 @@ import {
     PrimaryColumn,
     Table,
 } from "typeorm"
-import * as argon2 from "argon2"
+import * as crypto from "bcryptjs"
 
 @Entity("user")
 export class UserEntity {
@@ -46,8 +46,8 @@ export class UserEntity {
     password: string
 
     @BeforeInsert()
-    async hashPassword() {
-        this.password = await argon2.hash(this.password)
+    hashPassword() {
+        this.password = crypto.hashSync(this.password, crypto.genSaltSync(10))
     }
 
     @Column({

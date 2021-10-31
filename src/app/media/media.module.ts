@@ -15,7 +15,7 @@ import { AwsService } from "src/shared/services/aws.service"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { MediaRepository } from "src/shared/repositories/media.repository"
 import { MediaEntity } from "src/shared/entities/media.entity"
-import { RedisService } from "src/shared/Services/redis.service"
+import { RedisService } from "src/shared/services/redis.service"
 
 @Module({
     imports: [TypeOrmModule.forFeature([MediaEntity, MediaRepository])],

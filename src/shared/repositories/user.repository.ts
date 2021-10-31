@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common"
 
 import { Repository, EntityRepository } from "typeorm"
-import * as argon2 from "argon2"
+import * as crypto from "bcryptjs"
 
 import {
     CreateUserDto,
@@ -33,7 +33,7 @@ export class UserRepository extends Repository<UserEntity> {
         } catch {
             throw new BadRequestException("계정이 존재하지 않습니다.")
         }
-        const isValidPassword = argon2.verify(user.password, dto.password)
+        const isValidPassword = crypto.compareSync(dto.password, user.password)
         if (!isValidPassword)
             throw new BadRequestException("비밀번호가 올바르지 않습니다.")
         return user
@@ -85,7 +85,7 @@ export class UserRepository extends Repository<UserEntity> {
         } catch (error) {
             throw new NotFoundException("계정이 존재하지 않습니다")
         }
-        const hashedPassword = await argon2.hash(password)
+        const hashedPassword = crypto.hashSync(password, crypto.genSaltSync(10))
         user.password = hashedPassword
         return await this.save(user)
     }

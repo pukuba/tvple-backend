@@ -10,8 +10,8 @@ import { Connection } from "typeorm"
 import { AuthModule } from "./app/auth/auth.module"
 import { ConfigModule } from "@nestjs/config"
 import { AuthService } from "./app/auth/service/auth.service"
-import { RedisService } from "./shared/Services/redis.service"
-import { BlacklistMiddleware } from "src/shared/Middleware/blacklist.middleware"
+import { RedisService } from "./shared/services/redis.service"
+import { BlacklistMiddleware } from "src/shared/middleware/blacklist.middleware"
 import { MediaModule } from "./app/media/media.module"
 @Global()
 @Module({

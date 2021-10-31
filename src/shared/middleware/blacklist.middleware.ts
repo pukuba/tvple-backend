@@ -5,7 +5,7 @@ import {
     Request,
     Response,
 } from "@nestjs/common"
-import { RedisService } from "../Services/redis.service"
+import { RedisService } from "../services/redis.service"
 
 @Injectable()
 export class BlacklistMiddleware implements NestMiddleware {
