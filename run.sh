@@ -1,0 +1,2 @@
+yarn update;
+yarn start;

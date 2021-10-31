@@ -23,7 +23,8 @@
         "migration:generate": "typeorm migration:generate -n myMigration -d migrations",
         "migration:run": "typeorm migration:run",
         "migration:revert": "typeorm migration:revert",
-        "update": "yarn migration:generate; yarn build; yarn migration:run"
+        "update": "yarn migration:generate; yarn build; yarn migration:run",
+        "init-ormconf": "ts-node init.ts"
     },
     "dependencies": {
         "@nestjs/common": "^8.0.0",
@@ -46,6 +47,7 @@
         "@types/shortid": "^0.0.29",
         "argon2": "^0.28.2",
         "aws-sdk": "^2.1008.0",
+        "bcryptjs": "^2.4.3",
         "class-transformer": "^0.4.0",
         "class-validator": "^0.13.1",
         "concat-stream": "^2.0.0",
