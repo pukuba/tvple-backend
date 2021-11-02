@@ -1,3 +1,4 @@
+// Nest dependencies
 import {
     BadRequestException,
     UnprocessableEntityException,
@@ -5,10 +6,11 @@ import {
     ForbiddenException,
 } from "@nestjs/common"
 
+// Other dependencies
 import { Repository, EntityRepository, Like } from "typeorm"
-import * as argon2 from "argon2"
 
-import { UploadMediaDto } from "src/app/media/service/dto"
+// Local files
+import { UploadMediaDto } from "src/app/media/dto"
 import { configService } from "../services/config.service"
 import { MediaEntity } from "../entities/media.entity"
 

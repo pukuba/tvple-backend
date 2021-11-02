@@ -13,7 +13,7 @@ import { validate } from "class-validator"
 import { getRepository, Repository } from "typeorm"
 
 // Local files
-import { UploadMediaDto } from "./dto/upload-media.dto"
+import { UploadMediaDto } from "../dto/upload-media.dto"
 import { AwsService } from "src/shared/services/aws.service"
 import { MediaRepository } from "src/shared/repositories/media.repository"
 import { File } from "src/shared/services/type"
@@ -62,7 +62,7 @@ export class MediaService {
         )
     }
 
-    async getMedia(mediaId: string, ip: string) {
+    async getMedia(mediaId: string, ip: string, userId?: string) {
         const view = await this.redisService.getData(`${mediaId}${ip}`)
         if (view === null) {
             await Promise.all([

@@ -33,8 +33,7 @@ import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 import { MediaService } from "../service/media.service"
-import { UploadMediaDto } from "../service/dto"
-import { query } from "express"
+import { UploadMediaDto } from "../dto"
 
 @ApiTags("v1/media")
 @Controller("v1/media")
@@ -60,10 +59,20 @@ export class MediaController {
         )
     }
 
-    @Get("")
+    @Get(":mediaId")
     @ApiOperation({ summary: "get media" })
-    async getMedia(@Query("id") id: string, @Ip() ip) {
-        return this.mediaService.getMedia(id, ip)
+    async getMedia(
+        @Ip() ip: string,
+        @Param("mediaId") mediaId: string,
+        @Headers("authorization") bearer: string,
+    ) {
+        let userId: string | undefined = undefined
+        try {
+            userId = jwtManipulationService.decodeJwtToken(bearer, "id")
+        } catch {
+            userId = undefined
+        }
+        return this.mediaService.getMedia(mediaId, ip, userId)
     }
 
     @Get("/search")
@@ -78,11 +87,11 @@ export class MediaController {
     @ApiOperation({ summary: "영상을 삭제" })
     async deleteMedia(
         @Headers("authorization") bearer: string,
-        @Param("titleId") titleId: string,
+        @Param("mediaId") mediaId: string,
     ) {
         return this.mediaService.deleteMedia(
             jwtManipulationService.decodeJwtToken(bearer, "id"),
-            titleId,
+            mediaId,
         )
     }
 }
