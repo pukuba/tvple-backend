@@ -64,12 +64,14 @@ export class MediaEntity {
     @Column({
         type: "integer",
         nullable: false,
+        default: 0,
     })
     likes: number
 
     @Column({
         type: "integer",
         nullable: false,
+        default: 0,
     })
     views: number
 
