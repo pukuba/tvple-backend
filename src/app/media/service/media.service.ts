@@ -76,4 +76,8 @@ export class MediaService {
     async searchMedia(page: number, keyword: string) {
         return await this.mediaRepository.searchMedia(page, keyword)
     }
+
+    async deleteMedia(userId: string, mediaId: string) {
+        return await this.mediaRepository.deleteMedia(userId, mediaId)
+    }
 }

@@ -71,4 +71,18 @@ export class MediaController {
     async searchMedia(@Query() { page, keyword }) {
         return this.mediaService.searchMedia(page, keyword)
     }
+
+    @Delete(":mediaId")
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard("jwt"))
+    @ApiOperation({ summary: "영상을 삭제" })
+    async deleteMedia(
+        @Headers("authorization") bearer: string,
+        @Param("titleId") titleId: string,
+    ) {
+        return this.mediaService.deleteMedia(
+            jwtManipulationService.decodeJwtToken(bearer, "id"),
+            titleId,
+        )
+    }
 }

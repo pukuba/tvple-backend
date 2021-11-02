@@ -65,4 +65,16 @@ export class MediaRepository extends Repository<MediaEntity> {
             count: total,
         }
     }
+
+    async deleteMedia(userId: string, mediaId: string) {
+        try {
+            const media: MediaEntity = await this.findOneOrFail({
+                mediaId,
+                userId,
+            })
+            await this.delete(media)
+        } catch {
+            throw new NotFoundException("해당 영상이 존재하지 않습니다")
+        }
+    }
 }
