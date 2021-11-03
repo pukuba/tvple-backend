@@ -43,7 +43,7 @@ export class MediaService {
                     throw new BadRequestException(errors)
                 }
                 try {
-                    const url = this.awsService.uploadFile(
+                    const url = await this.awsService.uploadFile(
                         `${Date.now()}-${file.originalname}`,
                         "media",
                         file.buffer,
@@ -63,14 +63,16 @@ export class MediaService {
     }
 
     async getMedia(mediaId: string, ip: string, userId?: string) {
+        const media = await this.mediaRepository.getMediaByMediaId(mediaId)
         const view = await this.redisService.getData(`${mediaId}${ip}`)
         if (view === null) {
             await Promise.all([
                 this.redisService.setOnlyKey(`${mediaId}${ip}`, 3600),
                 this.mediaRepository.updateMediaViewCount(mediaId, 1),
             ])
+            media.views++
         }
-        return await this.mediaRepository.getMediaByMediaId(mediaId)
+        return media
     }
 
     async searchMedia(page: number, keyword: string) {

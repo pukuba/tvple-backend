@@ -35,7 +35,7 @@ export class MediaRepository extends Repository<MediaEntity> {
         try {
             media = await this.findOneOrFail({ mediaId: mediaId })
         } catch {
-            throw new BadRequestException("해당 게시글이 존재하지가 않습니다")
+            throw new BadRequestException("해당 영상이 존재하지가 않습니다")
         }
         return media
     }

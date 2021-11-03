@@ -20,25 +20,19 @@ export class AwsService {
         })
     }
 
-    uploadFile(
+    async uploadFile(
         fileName: string,
         directory: "media" | "image",
         buffer: Buffer,
-    ): string {
-        this.s3Instance().upload(
-            {
+    ) {
+        await this.s3Instance()
+            .upload({
                 Bucket: configService.getEnv("AWS_BUCKET"),
                 Key: `${directory}/${fileName}`,
                 Body: buffer,
                 ACL: "public-read",
-            },
-            (error, _data) => {
-                if (error) {
-                    console.log(error)
-                    throw Error
-                }
-            },
-        )
+            })
+            .promise()
         return `${configService.getEnv("AWS_END_POINT")}/${configService.getEnv(
             "AWS_BUCKET",
         )}/${directory}/${fileName}`

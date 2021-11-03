@@ -18,7 +18,13 @@ import { MediaEntity } from "src/shared/entities/media.entity"
 import { RedisService } from "src/shared/services/redis.service"
 
 @Module({
-    imports: [TypeOrmModule.forFeature([MediaEntity, MediaRepository])],
+    imports: [
+        TypeOrmModule.forFeature([
+            MediaEntity,
+            MediaRepository,
+            UserRepository,
+        ]),
+    ],
     controllers: [MediaController],
     providers: [MediaService, AwsService, RedisService],
     exports: [MediaService],
