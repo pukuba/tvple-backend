@@ -33,7 +33,7 @@ import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 import { MediaService } from "../service/media.service"
-import { UploadMediaDto } from "../dto"
+import { UploadMediaDto, UpdateMediaDto } from "../dto"
 
 @ApiTags("v1/media")
 @Controller("v1/media")
@@ -50,7 +50,7 @@ export class MediaController {
     async uploadMedia(
         @Headers("authorization") bearer: string,
         @UploadedFile() file,
-        @Body() body,
+        @Body() body: UploadMediaDto,
     ) {
         return this.mediaService.uploadMedia(
             jwtManipulationService.decodeJwtToken(bearer, "id"),
@@ -92,6 +92,22 @@ export class MediaController {
         return this.mediaService.deleteMedia(
             jwtManipulationService.decodeJwtToken(bearer, "id"),
             mediaId,
+        )
+    }
+
+    @Patch(":mediaId")
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard("jwt"))
+    @ApiOperation({ summary: "영상을 수정" })
+    async updateMedia(
+        @Headers("authorization") bearer: string,
+        @Param("mediaId") mediaId: string,
+        @Body() body: UpdateMediaDto,
+    ) {
+        return this.mediaService.updateMedia(
+            jwtManipulationService.decodeJwtToken(bearer, "id"),
+            mediaId,
+            body,
         )
     }
 }

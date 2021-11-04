@@ -18,6 +18,7 @@ import { MessageService } from "src/shared/services/message.service"
 import { RedisService } from "src/shared/services/redis.service"
 import { JwtStrategy } from "./strategy/jwt.strategy"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
+import { BlacklistMiddleware } from "src/shared/middleware/blacklist.middleware"
 @Module({
     imports: [
         TypeOrmModule.forFeature([UserEntity, UserRepository]),
@@ -36,4 +37,11 @@ import { JwtAuthGuard } from "src/shared/guards/role.guard"
     controllers: [AuthController],
     exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(BlacklistMiddleware).forRoutes({
+            path: "v1/auth/sign-out",
+            method: RequestMethod.DELETE,
+        })
+    }
+}
