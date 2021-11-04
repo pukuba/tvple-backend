@@ -40,7 +40,7 @@ describe("MediaService", () => {
         mediaDb = module.get<MediaRepository>(MediaRepository)
         await userDb.createUser({
             username: "test",
-            password: "test",
+            password: "testtest1@@",
             id: "test",
             phoneNumber: "01000000000",
             verificationToken: "01010101010",

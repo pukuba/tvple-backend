@@ -13,7 +13,7 @@ import { validate } from "class-validator"
 import { getRepository, Repository } from "typeorm"
 
 // Local files
-import { UploadMediaDto } from "../dto/upload-media.dto"
+import { UploadMediaDto, UpdateMediaDto } from "../dto"
 import { AwsService } from "src/shared/services/aws.service"
 import { MediaRepository } from "src/shared/repositories/media.repository"
 import { File } from "src/shared/services/type"
@@ -81,5 +81,13 @@ export class MediaService {
 
     async deleteMedia(userId: string, mediaId: string) {
         return await this.mediaRepository.deleteMedia(userId, mediaId)
+    }
+
+    async updateMedia(
+        userId: string,
+        mediaId: string,
+        payload: UpdateMediaDto,
+    ) {
+        return await this.mediaRepository.patchMedia(userId, mediaId, payload)
     }
 }

@@ -10,7 +10,7 @@ import {
 import { Repository, EntityRepository, Like } from "typeorm"
 
 // Local files
-import { UploadMediaDto } from "src/app/media/dto"
+import { UploadMediaDto, UpdateMediaDto } from "src/app/media/dto"
 import { configService } from "../services/config.service"
 import { MediaEntity } from "../entities/media.entity"
 
@@ -75,6 +75,20 @@ export class MediaRepository extends Repository<MediaEntity> {
                 userId,
             })
             await this.delete(media)
+        } catch {
+            throw new NotFoundException("해당 영상이 존재하지 않습니다")
+        }
+    }
+
+    async patchMedia(userId: string, mediaId: string, dto: UpdateMediaDto) {
+        try {
+            const media: MediaEntity = await this.findOneOrFail({
+                mediaId,
+                userId,
+            })
+            media.title = dto.title || media.title
+            media.description = dto.description || media.description
+            return await this.save(media)
         } catch {
             throw new NotFoundException("해당 영상이 존재하지 않습니다")
         }
