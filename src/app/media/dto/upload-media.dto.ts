@@ -24,7 +24,7 @@ export class UploadMediaDto {
     description: string
 }
 
-export class UploadMediaResponseDto {
+export class MediaEntityResponseDto {
     @ApiProperty({ example: "string" })
     mediaId: string
 

@@ -25,6 +25,7 @@ import {
     ApiConsumes,
     ApiCreatedResponse,
     ApiQuery,
+    ApiParam,
     ApiOkResponse,
 } from "@nestjs/swagger"
 
@@ -42,7 +43,7 @@ import {
     UpdateMediaDto,
     SearchMediaDto,
     SearchMediaResponseDto,
-    UploadMediaResponseDto,
+    MediaEntityResponseDto,
 } from "../dto"
 
 @ApiTags("v1/media")
@@ -66,7 +67,7 @@ export class MediaController {
     @ApiConsumes("multipart/form-data")
     @ApiBody({ type: UploadMediaDto })
     @ApiCreatedResponse({
-        type: UploadMediaResponseDto,
+        type: MediaEntityResponseDto,
         description: "업로드 성공",
     })
     async uploadMedia(
@@ -83,6 +84,10 @@ export class MediaController {
 
     @Get(":mediaId")
     @ApiOperation({ summary: "get media" })
+    @ApiOkResponse({
+        type: MediaEntityResponseDto,
+        description: "미디어 정보 가져오기 성공",
+    })
     async getMedia(
         @Ip() ip: string,
         @Param("mediaId") mediaId: string,
