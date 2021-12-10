@@ -74,7 +74,7 @@ export class AuthController {
         description: "휴대번호 인증번호 발송을 위한 API 입니다.",
     })
     @ApiCreatedResponse({
-        description: "회원정보 수정 성공",
+        description: "휴대번호 인증번호 발송 성공",
         type: StatusOKResponseDto,
     })
     async createAuthCode(@Body() userData: CreateAuthCodeDto) {
