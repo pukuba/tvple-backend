@@ -36,11 +36,13 @@ import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 import { MediaService } from "../service/media.service"
+import { MediaEntity } from "src/shared/entities/media.entity"
 import {
     UploadMediaDto,
     UpdateMediaDto,
     SearchMediaDto,
     SearchMediaResponseDto,
+    UploadMediaResponseDto,
 } from "../dto"
 
 @ApiTags("v1/media")
@@ -60,9 +62,13 @@ export class MediaController {
     @UseGuards(AuthGuard("jwt"))
     @Post("/upload")
     @UseInterceptors(FileInterceptor("file"))
-    @ApiOperation({ summary: "upload media" })
+    @ApiOperation({ summary: "미디어 업로드" })
     @ApiConsumes("multipart/form-data")
     @ApiBody({ type: UploadMediaDto })
+    @ApiCreatedResponse({
+        type: UploadMediaResponseDto,
+        description: "업로드 성공",
+    })
     async uploadMedia(
         @Headers("authorization") bearer: string,
         @UploadedFile() file,
