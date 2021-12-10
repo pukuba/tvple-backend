@@ -24,6 +24,8 @@ import {
     ApiBody,
     ApiConsumes,
     ApiCreatedResponse,
+    ApiQuery,
+    ApiOkResponse,
 } from "@nestjs/swagger"
 
 // Other dependencies
@@ -34,16 +36,29 @@ import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 import { MediaService } from "../service/media.service"
-import { UploadMediaDto, UpdateMediaDto } from "../dto"
+import {
+    UploadMediaDto,
+    UpdateMediaDto,
+    SearchMediaDto,
+    SearchMediaResponseDto,
+} from "../dto"
 
 @ApiTags("v1/media")
 @Controller("v1/media")
 export class MediaController {
     constructor(private readonly mediaService: MediaService) {}
 
+    @Get("/search")
+    @ApiOperation({ summary: "미디어 검색" })
+    @ApiQuery({ type: SearchMediaDto })
+    @ApiOkResponse({ type: SearchMediaResponseDto, description: "검색 성공" })
+    async searchMedia(@Query() { page, keyword }) {
+        return this.mediaService.searchMedia(page, keyword)
+    }
+
     @ApiBearerAuth()
     @UseGuards(AuthGuard("jwt"))
-    @Post("")
+    @Post("/upload")
     @UseInterceptors(FileInterceptor("file"))
     @ApiOperation({ summary: "upload media" })
     @ApiConsumes("multipart/form-data")
@@ -74,12 +89,6 @@ export class MediaController {
             userId = undefined
         }
         return this.mediaService.getMedia(mediaId, ip, userId)
-    }
-
-    @Get("/search")
-    @ApiOperation({ summary: "get all media" })
-    async searchMedia(@Query() { page, keyword }) {
-        return this.mediaService.searchMedia(page, keyword)
     }
 
     @Delete(":mediaId")
