@@ -12,7 +12,12 @@ import {
     Controller,
     UsePipes,
 } from "@nestjs/common"
-import { ApiBearerAuth, ApiTags, ApiOperation } from "@nestjs/swagger"
+import {
+    ApiBearerAuth,
+    ApiTags,
+    ApiOperation,
+    ApiCreatedResponse,
+} from "@nestjs/swagger"
 import { AuthGuard } from "@nestjs/passport"
 
 // Local files
@@ -22,6 +27,7 @@ import {
     ResetPasswordDto,
     DeleteUserDto,
     LoginDto,
+    LoginResultDto,
 } from "../dto"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { AuthService } from "../service/auth.service"
@@ -39,6 +45,7 @@ export class AuthController {
         description:
             "로그인을 윈한 API 입니다. \naccess 토큰과 유저 정보를 반환합니다.",
     })
+    @ApiCreatedResponse({ description: "jwt 토큰 생성", type: LoginResultDto })
     async signIn(@Body() userData: LoginDto) {
         const user = await this.authService.validateUser(userData)
         return await this.authService.signIn(user)

@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString, Length, Matches } from "class-validator"
 import { ApiProperty } from "@nestjs/swagger"
+import { Jwt } from "jsonwebtoken"
 
 export class LoginDto {
     @ApiProperty({ type: String, description: "유저 ID", required: true })
@@ -21,3 +22,20 @@ export class LoginDto {
     )
     readonly password: string
 }
+
+export class LoginResultDto {
+    @ApiProperty({ description: "access 토큰" })
+    readonly accessToken: string
+
+    @ApiProperty({
+        description: "유저 정보",
+        properties: {
+            id: { type: "string" },
+        },
+    })
+    readonly user: {
+        id: string
+    }
+}
+
+export class DeleteUserDto extends LoginDto {}
