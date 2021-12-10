@@ -105,7 +105,8 @@ export class MediaController {
     @Delete(":mediaId")
     @ApiBearerAuth()
     @UseGuards(AuthGuard("jwt"))
-    @ApiOperation({ summary: "영상을 삭제" })
+    @ApiOperation({ summary: "미디어를 삭제" })
+    @ApiOkResponse({ description: "미디어 삭제 성공" })
     async deleteMedia(
         @Headers("authorization") bearer: string,
         @Param("mediaId") mediaId: string,
@@ -120,6 +121,10 @@ export class MediaController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard("jwt"))
     @ApiOperation({ summary: "영상을 수정" })
+    @ApiOkResponse({
+        type: MediaEntityResponseDto,
+        description: "미디어 수정 성공",
+    })
     async updateMedia(
         @Headers("authorization") bearer: string,
         @Param("mediaId") mediaId: string,

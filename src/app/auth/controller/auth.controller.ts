@@ -146,7 +146,7 @@ export class AuthController {
         summary: "비밀번호 재설정",
         description: "비밀번호 재설정을 위한 API 입니다.",
     })
-    @ApiCreatedResponse({
+    @ApiOkResponse({
         type: StatusOKResponseDto,
         description: "비밀번호 재설정 성공",
     })
