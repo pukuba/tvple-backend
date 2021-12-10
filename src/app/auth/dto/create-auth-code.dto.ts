@@ -13,3 +13,17 @@ export class CreateAuthCodeDto {
     })
     readonly phoneNumber: string
 }
+
+export class CreateAuthCodeResponseDto {
+    @ApiProperty({
+        type: String,
+        description: "status",
+    })
+    readonly status: string
+
+    @ApiProperty({
+        type: String,
+        description: "message",
+    })
+    readonly message: string
+}

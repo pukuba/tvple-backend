@@ -32,3 +32,11 @@ export class CheckAuthCodeDto {
     @Max(999999)
     readonly verificationCode: string
 }
+
+export class CheckAuthCodeResponseDto {
+    @ApiProperty({
+        type: String,
+        description: "인증 토큰",
+    })
+    readonly verificationToken: string
+}

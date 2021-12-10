@@ -17,6 +17,7 @@ import {
     ApiTags,
     ApiOperation,
     ApiCreatedResponse,
+    ApiOkResponse,
 } from "@nestjs/swagger"
 import { AuthGuard } from "@nestjs/passport"
 
@@ -27,6 +28,7 @@ import {
     ResetPasswordDto,
     DeleteUserDto,
     LoginDto,
+    CreateAuthCodeResponseDto as StatusOKResponseDto,
     LoginResultDto,
 } from "../dto"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
@@ -45,7 +47,10 @@ export class AuthController {
         description:
             "로그인을 윈한 API 입니다. \naccess 토큰과 유저 정보를 반환합니다.",
     })
-    @ApiCreatedResponse({ description: "jwt 토큰 생성", type: LoginResultDto })
+    @ApiCreatedResponse({
+        description: "jwt 토큰 생성 성공",
+        type: LoginResultDto,
+    })
     async signIn(@Body() userData: LoginDto) {
         const user = await this.authService.validateUser(userData)
         return await this.authService.signIn(user)
@@ -57,6 +62,7 @@ export class AuthController {
         summary: "회원가입",
         description: "회원가입을 위한 API 입니다.",
     })
+    @ApiCreatedResponse({ description: "회원생성 성공", type: LoginResultDto })
     async signUp(@Body() userData: CreateUserDto) {
         return this.authService.signUp(userData)
     }
@@ -67,6 +73,10 @@ export class AuthController {
         summary: "휴대번호 인증번호 발송",
         description: "휴대번호 인증번호 발송을 위한 API 입니다.",
     })
+    @ApiCreatedResponse({
+        description: "회원정보 수정 성공",
+        type: StatusOKResponseDto,
+    })
     async createAuthCode(@Body() userData: CreateAuthCodeDto) {
         return this.authService.createAuthCode(userData)
     }
@@ -75,6 +85,10 @@ export class AuthController {
     @ApiOperation({
         summary: "휴대번호 인증번호 확인",
         description: "휴대번호 인증번호 확인을 위한 API 입니다",
+    })
+    @ApiOkResponse({
+        type: StatusOKResponseDto,
+        description: "휴대번호 인증번호 확인 성공",
     })
     async checkAuthCode(
         @Query("phoneNumber") phoneNumber: string,
@@ -93,6 +107,7 @@ export class AuthController {
         summary: "로그아웃",
         description: "로그아웃을 위한 API 입니다.",
     })
+    @ApiOkResponse({ type: StatusOKResponseDto, description: "로그아웃 성공" })
     async signOut(@Headers("authorization") bearer: string) {
         return this.authService.signOut(bearer)
     }
@@ -105,7 +120,8 @@ export class AuthController {
         summary: "계정 삭제",
         description: "계정 삭제를 위한 API 입니다.",
     })
-    async account(
+    @ApiOkResponse({ type: StatusOKResponseDto, description: "계정 삭제 성공" })
+    async deleteAccount(
         @Body() userData: DeleteUserDto,
         @Headers("authorization") bearer: string,
     ) {
@@ -117,6 +133,10 @@ export class AuthController {
         summary: "아이디 찾기",
         description: "아이디 찾기를 위한 API 입니다.",
     })
+    @ApiOkResponse({
+        type: StatusOKResponseDto,
+        description: "아이디 찾기 성공",
+    })
     async findId(@Query("verificationToken") verificationToken: string) {
         return this.authService.findId({ verificationToken })
     }
@@ -125,6 +145,10 @@ export class AuthController {
     @ApiOperation({
         summary: "비밀번호 재설정",
         description: "비밀번호 재설정을 위한 API 입니다.",
+    })
+    @ApiCreatedResponse({
+        type: StatusOKResponseDto,
+        description: "비밀번호 재설정 성공",
     })
     async resetPassword(@Body() userData: ResetPasswordDto) {
         return this.authService.resetPassword(userData)

@@ -79,7 +79,7 @@ export class AuthService {
         return responseData
     }
 
-    async signOut(bearer: string) {
+    async signOut(bearer: string): Promise<StatusOk> {
         const decodedToken = this.jwtService.decodeJwtToken(bearer)
         const expireDate: number = decodedToken.exp
         const remainingSeconds = Math.round(expireDate - Date.now() / 1000)
