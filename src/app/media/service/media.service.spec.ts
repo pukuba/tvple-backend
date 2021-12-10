@@ -31,6 +31,7 @@ describe("MediaService", () => {
                     username: "travis",
                     database: "test",
                     entities: ["./**/*.entity.ts"],
+                    keepConnectionAlive: true,
                     synchronize: true,
                 }),
             ],
@@ -66,6 +67,7 @@ describe("MediaService", () => {
                 description,
                 mediaId: id,
             } = await service.uploadMedia("test", file, {
+                file: file,
                 title: "test",
                 description: "test",
             })

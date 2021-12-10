@@ -8,9 +8,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm"
 
 // Other dependencies
-import { JwtPayload } from "jsonwebtoken"
 import { validate } from "class-validator"
-import { getRepository, Repository } from "typeorm"
 
 // Local files
 import { UploadMediaDto, UpdateMediaDto } from "../dto"
@@ -37,6 +35,7 @@ export class MediaService {
         const dto = new UploadMediaDto()
         dto.title = payload.title
         dto.description = payload.description
+        dto.file = file
         return await validate(dto, { validationError: { target: false } }).then(
             async (errors) => {
                 if (errors.length > 0) {
