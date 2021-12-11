@@ -20,7 +20,9 @@ import { MediaModule } from "./app/media/media.module"
             envFilePath: ".env",
             isGlobal: true,
         }),
-        TypeOrmModule.forRoot(),
+        TypeOrmModule.forRoot({
+            entities: [__dirname + "/**/*.entity.{ts,js}"],
+        }),
         AuthModule,
         MediaModule,
     ],

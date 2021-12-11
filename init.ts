@@ -4,12 +4,15 @@ env.config()
 
 const data = {
     type: "mysql",
-    host: process.env.DB_HOST || "localhost",
-    username: process.env.USERNAME || "root",
+    host: process.env.DB_HOST || "127.0.0.1",
+    username: process.env.DB_USERNAME || "root",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_DATABASE || "test",
-    entities: ["dist/**/*.entity.js"],
-    migrations: ["dist/migrations/**/*{.js,.ts}"],
+    entities: [
+        process.env.NODE_ENV === "dev"
+            ? "dist/**/*.entity{.ts,.js}"
+            : "src/**/*.entity{.ts,.js}",
+    ],
     synchronize: true,
 }
 

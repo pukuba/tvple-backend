@@ -29,6 +29,7 @@ import {
     DeleteUserDto,
     LoginDto,
     CreateAuthCodeResponseDto as StatusOKResponseDto,
+    CheckAuthCodeResponseDto,
     LoginResultDto,
 } from "../dto"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
@@ -87,7 +88,7 @@ export class AuthController {
         description: "휴대번호 인증번호 확인을 위한 API 입니다",
     })
     @ApiOkResponse({
-        type: StatusOKResponseDto,
+        type: CheckAuthCodeResponseDto,
         description: "휴대번호 인증번호 확인 성공",
     })
     async checkAuthCode(
