@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     async validate({ iat, exp, id }): Promise<any> {
         const timeDiff = exp - iat
         if (timeDiff <= 0) {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException("Access Token이 만료되었습니다")
         }
         try {
             const user = await this.userRepository.findOneOrFail({ id })
@@ -38,7 +38,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
                 username: user.username,
             }
         } catch {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException("해당 계정이 존재하지 않습니다")
         }
     }
 }
