@@ -9,7 +9,7 @@ export const beforeRegister = async (app) => {
         phoneNumber: configService.getEnv("PUKUBA_PHONENUMBER") as string,
         exp: Math.floor(Date.now() / 1000) + 60 * 15,
     })
-    const { body } = await request(app)
+    const { body } = await request(app.getHttpServer())
         .post("/v1/auth/sign-up")
         .set({ "Content-Type": "application/json" })
         .send({
@@ -23,9 +23,9 @@ export const beforeRegister = async (app) => {
     return `Bearer ${body.accessToken}`
 }
 
-export const afterDeleteAccount = async (app, token) => {
-    await request(app)
-        .delete("/v1/auth/delete-account")
+export const afterDeleteAccount = async (app, token: string) => {
+    await request(app.getHttpServer())
+        .delete("/v1/auth/account")
         .set({ "Content-Type": "application/json" })
         .set({ Authorization: token })
         .send({
