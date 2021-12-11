@@ -51,7 +51,8 @@ export class AuthService {
                 "이미 중복된 아이디, 혹은 닉네임, 휴대번호가 있습니다.",
             )
 
-        const jwtResult = this.jwtService.decodeJwtToken(verificationToken)
+        const jwtResult =
+            this.jwtService.decodeVerificationToken(verificationToken)
         if (jwtResult.phoneNumber !== phoneNumber)
             throw new UnauthorizedException(
                 "휴대번호 인증이 만료되었거나 휴대번호 인증절차가 이루어지지 않았습니다.",
@@ -118,7 +119,7 @@ export class AuthService {
         }
         await this.redisService.deleteData(phoneNumber)
         const responseData = {
-            verificationToken: ` ${this.jwtService.generateJwtToken({
+            verificationToken: `${this.jwtService.generateJwtToken({
                 phoneNumber,
                 exp: Math.floor(Date.now() / 1000) + 60 * 15,
             })}`,
@@ -128,8 +129,9 @@ export class AuthService {
 
     async findId(dto: FindIdDto): Promise<StatusOk> {
         const { verificationToken } = dto
-        const jwtData = this.jwtService.decodeJwtToken(verificationToken)
-        const isBlackList = this.redisService.getData(
+        const jwtData =
+            this.jwtService.decodeVerificationToken(verificationToken)
+        const isBlackList = await this.redisService.getData(
             `blacklist-${verificationToken}`,
         )
         if (isBlackList !== null) {
@@ -163,7 +165,8 @@ export class AuthService {
 
     async resetPassword(dto: ResetPasswordDto): Promise<StatusOk> {
         const { verificationToken, password } = dto
-        const jwtResult = this.jwtService.decodeJwtToken(verificationToken)
+        const jwtResult =
+            this.jwtService.decodeVerificationToken(verificationToken)
         const isBlackList = await this.redisService.getData(
             `blacklist-${verificationToken}`,
         )

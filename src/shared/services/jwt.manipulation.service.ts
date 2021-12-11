@@ -19,12 +19,29 @@ export class JwtManipulationService {
                 throw new BadRequestException("Token signature is not valid")
             }
         } catch {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException("Access Token이 유효하지 않습니다")
         }
     }
 
     generateJwtToken(tokenInfo: IGenerateJwtToken) {
         return jwt.sign(tokenInfo, configService.getEnv("JWT_TOKEN"))
+    }
+
+    decodeVerificationToken(token: string) {
+        try {
+            if (!token) throw new Error()
+            try {
+                const decodedJwtData = jwt.verify(
+                    token,
+                    configService.getEnv("JWT_TOKEN"),
+                ) as jwt.JwtPayload
+                return decodedJwtData
+            } catch (err) {
+                throw new BadRequestException("Token signature is not valid")
+            }
+        } catch {
+            throw new UnauthorizedException("인증 토큰이 유효하지 않습니다")
+        }
     }
 }
 

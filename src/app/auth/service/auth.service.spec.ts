@@ -1,17 +1,19 @@
+// Nest dependencies
 import { Test, TestingModule } from "@nestjs/testing"
-import { AuthService } from "./auth.service"
+import { TypeOrmModule } from "@nestjs/typeorm"
 
+// Other dependencies
 import { Connection, Repository } from "typeorm"
 import { deepStrictEqual as equal } from "assert"
-import { TypeOrmModule } from "@nestjs/typeorm"
-import { AuthController } from "../controller/auth.controller"
 
-import { JwtManipulationService } from "src/shared/services/jwt.manipulation.service"
-import { MessageService } from "src/shared/services/message.service"
+// Local files
+import { AuthController } from "../controller/auth.controller"
+import { AuthService } from "./auth.service"
 import { RedisService } from "src/shared/Services/redis.service"
 import { AuthModule } from "../auth.module"
 import { UserRepository } from "src/shared/repositories/user.repository"
-describe("UserService", () => {
+
+describe("AuthService", () => {
     let service: AuthService
     let db: UserRepository
     let token: string
