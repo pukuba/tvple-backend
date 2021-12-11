@@ -9,27 +9,30 @@ import {
     PrimaryColumn,
     Table,
     Index,
+    Unique,
 } from "typeorm"
 
 @Entity("like")
+@Unique(["userId", "mediaId"])
 export class LikeEntity {
     constructor(partial: Partial<LikeEntity>) {
         Object.assign(this, partial)
     }
 
-    @PrimaryColumn({
+    @Column({
         type: "varchar",
         length: 20,
         nullable: false,
-        primary: true,
     })
     mediaId: string
 
-    @PrimaryColumn({
+    @Column({
         type: "varchar",
         length: 20,
         nullable: false,
-        primary: true,
     })
     userId: string
+
+    @PrimaryGeneratedColumn("uuid")
+    id: string
 }
