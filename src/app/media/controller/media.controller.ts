@@ -82,8 +82,27 @@ export class MediaController {
         )
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard("jwt"))
+    @Post("/like/:mediaId")
+    @ApiOperation({ summary: "미디어 좋아요 상태 변경" })
+    @ApiOkResponse({
+        type: MediaEntityResponseDto,
+        description: "좋아요 상태 변경 성공",
+    })
+    @ApiBearerAuth()
+    async likeMedia(
+        @Headers("authorization") bearer: string,
+        @Param("mediaId") mediaId: string,
+    ) {
+        return this.mediaService.likeMedia(
+            jwtManipulationService.decodeJwtToken(bearer, "id"),
+            mediaId,
+        )
+    }
+
     @Get(":mediaId")
-    @ApiOperation({ summary: "get media" })
+    @ApiOperation({ summary: "동영상 정보 가져오기" })
     @ApiOkResponse({
         type: MediaEntityResponseDto,
         description: "미디어 정보 가져오기 성공",

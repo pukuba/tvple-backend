@@ -14,6 +14,7 @@ import { validate } from "class-validator"
 import { UploadMediaDto, UpdateMediaDto } from "../dto"
 import { AwsService } from "src/shared/services/aws.service"
 import { MediaRepository } from "src/shared/repositories/media.repository"
+import { LikeRepository } from "src/shared/repositories/like.repository"
 import { File } from "src/shared/types"
 import { RedisService } from "src/shared/services/redis.service"
 import { MediaEntity } from "src/shared/entities/media.entity"
@@ -25,7 +26,32 @@ export class MediaService {
         private readonly redisService: RedisService,
         @InjectRepository(MediaRepository)
         private readonly mediaRepository: MediaRepository,
+        @InjectRepository(LikeRepository)
+        private readonly likeRepository: LikeRepository,
     ) {}
+
+    async likeMedia(userId: string, mediaId: string) {
+        const [media, likeStatus] = await Promise.all([
+            this.mediaRepository.getMediaByMediaId(mediaId),
+            this.likeRepository.getLikeStatus(userId, mediaId),
+        ])
+
+        if (likeStatus) {
+            media.likes--
+            await Promise.all([
+                this.mediaRepository.updateMedia(media),
+                this.likeRepository.unlike(likeStatus),
+            ])
+        } else {
+            media.likes++
+            await Promise.all([
+                this.mediaRepository.updateMedia(media),
+                this.likeRepository.like(userId, mediaId),
+            ])
+        }
+
+        return media
+    }
 
     async uploadMedia(userId: string, file: File, payload: UploadMediaDto) {
         payload.title = payload.title.replace(/^\s+|\s+$/g, "")
@@ -62,14 +88,16 @@ export class MediaService {
     }
 
     async getMedia(mediaId: string, ip: string, userId?: string) {
-        const media = await this.mediaRepository.getMediaByMediaId(mediaId)
-        const view = await this.redisService.getData(`${mediaId}${ip}`)
+        const [media, view] = await Promise.all([
+            this.mediaRepository.getMediaByMediaId(mediaId),
+            this.redisService.getData(`${mediaId}${ip}`),
+        ])
         if (view === null) {
+            media.views++
             await Promise.all([
                 this.redisService.setOnlyKey(`${mediaId}${ip}`, 3600),
-                this.mediaRepository.updateMediaViewCount(mediaId, 1),
+                this.mediaRepository.updateMedia(media),
             ])
-            media.views++
         }
         return media
     }
@@ -79,7 +107,8 @@ export class MediaService {
     }
 
     async deleteMedia(userId: string, mediaId: string) {
-        return await this.mediaRepository.deleteMedia(userId, mediaId)
+        await this.mediaRepository.deleteMedia(userId, mediaId)
+        await this.likeRepository.deleteLikeByMediaId(mediaId)
     }
 
     async updateMedia(

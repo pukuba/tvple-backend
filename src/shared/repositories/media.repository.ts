@@ -16,6 +16,11 @@ import { MediaEntity } from "../entities/media.entity"
 
 @EntityRepository(MediaEntity)
 export class MediaRepository extends Repository<MediaEntity> {
+    async updateMedia(media: MediaEntity) {
+        await this.save(media)
+        return media
+    }
+
     async uploadMedia(userId: string, dto: UploadMediaDto, url: string) {
         const media = new MediaEntity({
             userId: userId,
@@ -38,17 +43,6 @@ export class MediaRepository extends Repository<MediaEntity> {
             throw new BadRequestException("해당 영상이 존재하지가 않습니다")
         }
         return media
-    }
-
-    async updateMediaViewCount(mediaId: string, count: number) {
-        let media: MediaEntity
-        try {
-            media = await this.findOneOrFail({ mediaId: mediaId })
-            media.views += count
-            await this.save(media)
-        } catch {
-            throw new NotFoundException("해당 게시글이 존재하지가 않습니다")
-        }
     }
 
     async searchMedia(page: number, keyword: string = "") {
