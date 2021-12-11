@@ -1,13 +1,4 @@
-import {
-    IsNotEmpty,
-    IsString,
-    Length,
-    Matches,
-    Min,
-    Max,
-    IsNumber,
-    IsNumberString,
-} from "class-validator"
+import { IsString, Matches, Min, Max, IsNumberString } from "class-validator"
 import { ApiProperty } from "@nestjs/swagger"
 
 export class CheckAuthCodeDto {

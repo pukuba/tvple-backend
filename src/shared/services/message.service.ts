@@ -1,7 +1,7 @@
 import fetch from "node-fetch"
 import * as crypto from "crypto-js"
 import { Injectable } from "@nestjs/common"
-import { ISendVerificationMessage } from "./type/index"
+import { ISendVerificationMessage } from "../types"
 import { configService } from "./config.service"
 
 @Injectable()

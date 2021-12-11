@@ -3,7 +3,7 @@ import { UnauthorizedException, BadRequestException } from "@nestjs/common"
 import * as jwt from "jsonwebtoken"
 
 import { configService } from "./config.service"
-import { IGenerateJwtToken } from "./type"
+import { IGenerateJwtToken } from "../types"
 export class JwtManipulationService {
     decodeJwtToken(token: string, property = "all") {
         try {

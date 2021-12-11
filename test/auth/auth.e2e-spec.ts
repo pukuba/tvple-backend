@@ -1,11 +1,16 @@
+// Nest dependencies
 import { Test, TestingModule } from "@nestjs/testing"
 import { INestApplication } from "@nestjs/common"
+
+// Other dependencies
 import * as request from "supertest"
+import { equal } from "assert"
+
+//Local files
 import { ApplicationModule } from "../../src/app.module"
 import { configService } from "../../src/shared/services/config.service"
 import { RedisService } from "../../src/shared/services/redis.service"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
-import { equal } from "assert"
 
 describe("Auth E2E", () => {
     let app: INestApplication

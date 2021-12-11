@@ -14,7 +14,7 @@ import { validate } from "class-validator"
 import { UploadMediaDto, UpdateMediaDto } from "../dto"
 import { AwsService } from "src/shared/services/aws.service"
 import { MediaRepository } from "src/shared/repositories/media.repository"
-import { File } from "src/shared/services/type"
+import { File } from "src/shared/types"
 import { RedisService } from "src/shared/services/redis.service"
 import { MediaEntity } from "src/shared/entities/media.entity"
 
