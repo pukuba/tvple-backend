@@ -18,7 +18,9 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
-        command: --init-file /data/application/init.sql
+        command:
+            - --init-file /data/application/init.sql
+            - "mysqld --ft_min_word_len=2"
         ports:
             - "3306:3306"
         volumes:

@@ -90,7 +90,7 @@ describe("MediaService", () => {
 
     describe("searchMedia", () => {
         it("should be return pageInfo", async () => {
-            const pageInfo = await service.searchMedia(1, "t")
+            const pageInfo = await service.searchMedia(1, "test")
             equal(pageInfo.count, 1)
             equal(pageInfo.data[0].mediaId, mediaId)
             equal(pageInfo.data[0].title.includes("t"), true)

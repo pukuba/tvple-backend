@@ -8,6 +8,7 @@ import {
     OneToMany,
     PrimaryColumn,
     Table,
+    Index,
 } from "typeorm"
 import * as shortid from "shortid"
 import * as argon2 from "argon2"
@@ -27,7 +28,8 @@ export class MediaEntity {
     mediaId: string
 
     @Column({
-        type: "text",
+        type: "varchar",
+        length: 512,
         nullable: false,
     })
     url: string
@@ -47,6 +49,7 @@ export class MediaEntity {
     })
     description: string
 
+    @Index({ fulltext: true })
     @Column({
         type: "varchar",
         length: 80,

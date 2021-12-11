@@ -8,6 +8,7 @@ import {
     OneToMany,
     PrimaryColumn,
     Table,
+    Index,
 } from "typeorm"
 import * as crypto from "bcryptjs"
 
@@ -17,6 +18,7 @@ export class UserEntity {
         Object.assign(this, partial)
     }
 
+    @Index({ unique: true })
     @PrimaryColumn({
         type: "varchar",
         length: 20,
@@ -24,6 +26,7 @@ export class UserEntity {
     })
     id: string
 
+    @Index({ unique: true })
     @PrimaryColumn({
         type: "varchar",
         length: 20,
@@ -31,6 +34,7 @@ export class UserEntity {
     })
     username: string
 
+    @Index({ unique: true })
     @PrimaryColumn({
         type: "varchar",
         nullable: false,
