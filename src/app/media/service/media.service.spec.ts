@@ -11,6 +11,7 @@ import { jwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 import { MediaModule } from "../media.module"
 import { UserRepository } from "src/shared/repositories/user.repository"
 import { MediaRepository } from "src/shared/repositories/media.repository"
+import { async } from "rxjs"
 describe("MediaService", () => {
     let service: MediaService
     let userDb: UserRepository
@@ -69,6 +70,26 @@ describe("MediaService", () => {
             equal(title, "test")
             equal(description, "test")
             mediaId = id
+        })
+    })
+
+    describe("likeMedia", () => {
+        it("should be return MediaEntity - 1", async () => {
+            const { mediaId: id, likes } = await service.likeMedia(
+                "test",
+                mediaId,
+            )
+            equal(id, mediaId)
+            equal(likes, 1)
+        })
+
+        it("should be return MediaEntity - 2", async () => {
+            const { mediaId: id, likes } = await service.likeMedia(
+                "test",
+                mediaId,
+            )
+            equal(id, mediaId)
+            equal(likes, 0)
         })
     })
 
