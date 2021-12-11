@@ -12,13 +12,13 @@ export class BlacklistMiddleware implements NestMiddleware {
     constructor(private readonly redisService: RedisService) {}
 
     async use(@Request() req, @Response() _res, next: Function) {
-        const token = req.headers.authorization.split(" ")[1]
+        const token = req.headers?.authorization?.split(" ")[1]
         const isTokenDead = await this.redisService.getData(
             `blacklist-${token}`,
         )
 
         if (isTokenDead !== null) {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException("blacklisted 토큰입니다")
         }
         next()
     }
