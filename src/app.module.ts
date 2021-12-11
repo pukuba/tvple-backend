@@ -10,6 +10,7 @@ import { Connection } from "typeorm"
 import { AuthModule } from "./app/auth/auth.module"
 import { ConfigModule } from "@nestjs/config"
 import { AuthService } from "./app/auth/service/auth.service"
+import { HealthModule } from "./app/health/health.module"
 import { RedisService } from "./shared/services/redis.service"
 
 import { MediaModule } from "./app/media/media.module"
@@ -25,6 +26,7 @@ import { MediaModule } from "./app/media/media.module"
         }),
         AuthModule,
         MediaModule,
+        HealthModule,
     ],
     controllers: [AppController],
     providers: [RedisService],
