@@ -35,7 +35,7 @@ import * as concat from "concat-stream"
 // Local files
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
-import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
+import { ValidationPipe } from "src/shared/pipes/validation.pipe"
 import { StatusOk } from "src/shared/types"
 
 @ApiTags("v1/health")

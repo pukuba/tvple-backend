@@ -16,7 +16,6 @@ export class BlacklistMiddleware implements NestMiddleware {
         const isTokenDead = await this.redisService.getData(
             `blacklist-${token}`,
         )
-
         if (isTokenDead !== null) {
             throw new UnauthorizedException("blacklisted 토큰입니다")
         }
