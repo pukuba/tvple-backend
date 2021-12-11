@@ -15,6 +15,7 @@ import { AwsService } from "src/shared/services/aws.service"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { MediaRepository } from "src/shared/repositories/media.repository"
 import { MediaEntity } from "src/shared/entities/media.entity"
+import { LikeRepository } from "src/shared/repositories/like.repository"
 import { RedisService } from "src/shared/services/redis.service"
 import { configService } from "src/shared/services/config.service"
 import { BlacklistMiddleware } from "src/shared/middleware/blacklist.middleware"
@@ -24,6 +25,7 @@ import { BlacklistMiddleware } from "src/shared/middleware/blacklist.middleware"
             MediaEntity,
             MediaRepository,
             UserRepository,
+            LikeRepository,
         ]),
     ],
     controllers: [MediaController],
@@ -31,10 +33,24 @@ import { BlacklistMiddleware } from "src/shared/middleware/blacklist.middleware"
     exports: [MediaService],
 })
 export class MediaModule {
-    // configure(consumer: MiddlewareConsumer) {
-    //     consumer.apply(BlacklistMiddleware).forRoutes({
-    //         path: "v1/auth/sign-out",
-    //         method: RequestMethod.DELETE,
-    //     })
-    // }
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(BlacklistMiddleware).forRoutes(
+            {
+                path: "v1/media/like/:mediaId",
+                method: RequestMethod.POST,
+            },
+            {
+                path: "v1/media/upload",
+                method: RequestMethod.POST,
+            },
+            {
+                path: "v1/media/:mediaId",
+                method: RequestMethod.DELETE,
+            },
+            {
+                path: "v1/media/:mediaId",
+                method: RequestMethod.PATCH,
+            },
+        )
+    }
 }
