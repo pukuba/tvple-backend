@@ -6,7 +6,7 @@ import { INestApplication } from "@nestjs/common"
 import * as request from "supertest"
 import { equal } from "assert"
 
-//Local files
+// Local files
 import { ApplicationModule } from "../../src/app.module"
 import { configService } from "../../src/shared/services/config.service"
 import { RedisService } from "../../src/shared/services/redis.service"
