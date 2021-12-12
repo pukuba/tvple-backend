@@ -22,21 +22,13 @@ export class LikeRepository extends Repository<LikeEntity> {
         const take = 20
 
         const [data, count] = await this.createQueryBuilder("like")
-            .leftJoinAndSelect("like.mediaId", "media")
-            .where("like.userId = :userId", { userId: userId })
+            .where("like.userId = :userId", { userId })
+            .leftJoinAndSelect("like.media", "media")
             .skip(skip)
             .take(take)
             .getManyAndCount()
-
         return {
-            data: (data as (LikeEntity & { mediaId: MediaEntity })[]).map(
-                (likeEntity): Omit<MediaEntity, "beforeInsert"> => {
-                    const data = likeEntity.mediaId as MediaEntity
-                    return {
-                        ...data,
-                    }
-                },
-            ),
+            data: data,
             count,
         }
     }

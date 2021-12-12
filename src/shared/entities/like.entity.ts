@@ -23,7 +23,9 @@ export class LikeEntity {
     }
 
     @OneToOne(() => MediaEntity)
-    @JoinColumn()
+    @JoinColumn({ referencedColumnName: "mediaId", name: "mediaId" })
+    media: MediaEntity
+
     @Column({
         type: "varchar",
         length: 20,
