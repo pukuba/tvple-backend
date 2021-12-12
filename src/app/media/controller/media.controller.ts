@@ -101,6 +101,24 @@ export class MediaController {
         )
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard("jwt"))
+    @Get("/like/list/:page")
+    @ApiOperation({ summary: "좋아요 목록 가져오기" })
+    @ApiOkResponse({
+        type: SearchMediaResponseDto,
+        description: "좋아요 목록 가져오기 성공",
+    })
+    async getLikeByMedia(
+        @Headers("authorization") bearer: string,
+        @Param("page") page: number = 1,
+    ) {
+        return this.mediaService.getLikeByMedia(
+            jwtManipulationService.decodeJwtToken(bearer, "id"),
+            page,
+        )
+    }
+
     @Get(":mediaId")
     @ApiOperation({ summary: "동영상 정보 가져오기" })
     @ApiOkResponse({
