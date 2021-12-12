@@ -18,6 +18,7 @@ import { LikeRepository } from "src/shared/repositories/like.repository"
 import { File } from "src/shared/types"
 import { RedisService } from "src/shared/services/redis.service"
 import { MediaEntity } from "src/shared/entities/media.entity"
+import { LikeEntity } from "src/shared/entities/like.entity"
 
 @Injectable()
 export class MediaService {
@@ -29,6 +30,13 @@ export class MediaService {
         @InjectRepository(LikeRepository)
         private readonly likeRepository: LikeRepository,
     ) {}
+
+    async getLikeByMedia(
+        userId: string,
+        page = 1,
+    ): Promise<(LikeEntity & { mediaId: MediaEntity })[]> {
+        return await this.likeRepository.getLikeByMedia(userId, page)
+    }
 
     async likeMedia(userId: string, mediaId: string) {
         const [media, likeStatus] = await Promise.all([
@@ -107,8 +115,8 @@ export class MediaService {
     }
 
     async deleteMedia(userId: string, mediaId: string) {
-        await this.mediaRepository.deleteMedia(userId, mediaId)
         await this.likeRepository.deleteLikeByMediaId(mediaId)
+        await this.mediaRepository.deleteMedia(userId, mediaId)
     }
 
     async updateMedia(

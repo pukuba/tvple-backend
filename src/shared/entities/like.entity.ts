@@ -10,7 +10,10 @@ import {
     Table,
     Index,
     Unique,
+    JoinColumn,
+    OneToOne,
 } from "typeorm"
+import { MediaEntity } from "./media.entity"
 
 @Entity("like")
 @Unique(["userId", "mediaId"])
@@ -19,6 +22,8 @@ export class LikeEntity {
         Object.assign(this, partial)
     }
 
+    @OneToOne((type) => MediaEntity)
+    @JoinColumn()
     @Column({
         type: "varchar",
         length: 20,
