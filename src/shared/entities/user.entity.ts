@@ -11,6 +11,7 @@ import {
     Index,
 } from "typeorm"
 import * as crypto from "bcryptjs"
+import { MediaEntity } from "./media.entity"
 
 @Entity("user")
 export class UserEntity {

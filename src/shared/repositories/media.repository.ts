@@ -42,6 +42,10 @@ export class MediaRepository extends Repository<MediaEntity> {
             .leftJoinAndSelect("media.user", "user")
             .select(["media", "user.username"])
             .getOne()
+
+        if (media === undefined) {
+            throw new NotFoundException("해당 영상이 존재하지 않습니다")
+        }
         return media
     }
 
@@ -59,10 +63,11 @@ export class MediaRepository extends Repository<MediaEntity> {
         const skip = Math.max(page - 1, 0) * 20
         const take = 20
         const [result, total] = await this.createQueryBuilder("media")
+            .select("media")
             .where(`MATCH(title) AGAINST ('${keyword}' IN BOOLEAN MODE)`)
             .orderBy("views", "DESC")
             .skip(skip)
-            .take(take)
+            .limit(take)
             .getManyAndCount()
         return {
             data: result,

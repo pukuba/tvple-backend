@@ -18,6 +18,7 @@ describe("MediaService", () => {
     let mediaDb: MediaRepository
     let token: string
     let mediaId: string
+    let mediaId1: string
     before(async () => {
         const module = await Test.createTestingModule({
             imports: [
@@ -48,7 +49,7 @@ describe("MediaService", () => {
         })
     })
     describe("uploadMedia", () => {
-        it("should be return MediaEntity", async () => {
+        it("should be return MediaEntity - 1", async () => {
             const file = {
                 buffer: fs.readFileSync("test/sample-mp4-file-small.mp4"),
                 fieldname: "file",
@@ -70,6 +71,30 @@ describe("MediaService", () => {
             equal(title, "test")
             equal(description, "test")
             mediaId = id
+        })
+
+        it("should be return MediaEntity - 2", async () => {
+            const file = {
+                buffer: fs.readFileSync("test/sample-mp4-file-small.mp4"),
+                fieldname: "file",
+                originalname: "sample-mp4-file-small.mp4",
+                encoding: "",
+                mimetype: "video/mp4",
+                name: "sample-mp4-file-small.mp4",
+                size: 1024,
+            }
+            const {
+                title,
+                description,
+                mediaId: id,
+            } = await service.uploadMedia("test", file, {
+                file: file,
+                title: "test-1",
+                description: "test-1",
+            })
+            equal(title, "test-1")
+            equal(description, "test-1")
+            mediaId1 = id
         })
     })
 
@@ -100,18 +125,28 @@ describe("MediaService", () => {
             equal(id, mediaId)
             equal(likes, 1)
         })
+
+        it("should be return MediaEntity - 4", async () => {
+            const { mediaId: id, likes } = await service.likeMedia(
+                "test",
+                mediaId1,
+            )
+            equal(id, mediaId1)
+            equal(likes, 1)
+        })
     })
 
     describe("getLikeMedia", () => {
         it("should be return MediaEntity", async () => {
             const data = await service.getLikeByMedia("test", 1)
-            equal(data.count, 1)
-            equal(data.data[0].mediaId, mediaId)
-            equal(data.data[0].userId, "test")
-            equal(data.data[0].title, "test")
-            equal(data.data[0].description, "test")
-            equal(data.data[0].likes, 1)
-            equal(data.data[0].views, 0)
+            equal(data.count, 2)
+            try {
+                equal(data.data[0].media.mediaId, mediaId)
+                equal(data.data[1].media.mediaId, mediaId1)
+            } catch {
+                equal(data.data[0].media.mediaId, mediaId1)
+                equal(data.data[1].media.mediaId, mediaId)
+            }
         })
     })
 
@@ -128,7 +163,7 @@ describe("MediaService", () => {
             try {
                 await service.getMedia("test1234", "::1", "test")
             } catch (e) {
-                equal(e.message, "해당 영상이 존재하지가 않습니다")
+                equal(e.message, "해당 영상이 존재하지 않습니다")
             }
         })
     })
@@ -136,11 +171,7 @@ describe("MediaService", () => {
     describe("searchMedia", () => {
         it("should be return pageInfo", async () => {
             const pageInfo = await service.searchMedia(1, "test")
-            equal(pageInfo.count, 1)
-            equal(pageInfo.data[0].mediaId, mediaId)
-            equal(pageInfo.data[0].title.includes("t"), true)
-            equal(pageInfo.data[0].likes, 1)
-            equal(pageInfo.data[0].views, 1)
+            equal(pageInfo.data[0].title.includes("test"), true)
         })
     })
 
@@ -154,8 +185,8 @@ describe("MediaService", () => {
     after(async () => {
         await Promise.all([
             mediaDb.query("delete from `like`;"),
-            mediaDb.query("delete from media;"),
             mediaDb.query("delete from user;"),
+            mediaDb.query("delete from media;"),
         ])
     })
 })

@@ -11,6 +11,7 @@ import {
     JoinColumn,
     Index,
     OneToOne,
+    ManyToOne,
 } from "typeorm"
 import * as shortid from "shortid"
 import { UserEntity } from "./user.entity"
@@ -43,8 +44,8 @@ export class MediaEntity {
     })
     userId: string
 
-    @OneToOne(() => UserEntity)
-    @JoinColumn({ referencedColumnName: "id" })
+    @ManyToOne(() => UserEntity, { onDelete: "CASCADE" })
+    @JoinColumn({ referencedColumnName: "id", name: "userId" })
     user: UserEntity
 
     @Column({
