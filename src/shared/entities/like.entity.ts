@@ -12,6 +12,7 @@ import {
     Unique,
     JoinColumn,
     OneToOne,
+    ManyToOne,
 } from "typeorm"
 import { MediaEntity } from "./media.entity"
 
@@ -22,7 +23,7 @@ export class LikeEntity {
         Object.assign(this, partial)
     }
 
-    @OneToOne(() => MediaEntity, { onDelete: "CASCADE" })
+    @ManyToOne(() => MediaEntity, { onDelete: "CASCADE" })
     @JoinColumn({ referencedColumnName: "mediaId", name: "mediaId" })
     media: MediaEntity
 
