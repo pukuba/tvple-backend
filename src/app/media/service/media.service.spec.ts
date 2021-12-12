@@ -11,7 +11,7 @@ import { jwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 import { MediaModule } from "../media.module"
 import { UserRepository } from "src/shared/repositories/user.repository"
 import { MediaRepository } from "src/shared/repositories/media.repository"
-import { async } from "rxjs"
+
 describe("MediaService", () => {
     let service: MediaService
     let userDb: UserRepository
@@ -91,6 +91,28 @@ describe("MediaService", () => {
             equal(id, mediaId)
             equal(likes, 0)
         })
+
+        it("should be return MediaEntity - 3", async () => {
+            const { mediaId: id, likes } = await service.likeMedia(
+                "test",
+                mediaId,
+            )
+            equal(id, mediaId)
+            equal(likes, 1)
+        })
+    })
+
+    describe("getLikeMedia", () => {
+        it("should be return MediaEntity", async () => {
+            const data = await service.getLikeByMedia("test")
+            equal(data.length, 1)
+            equal(data[0].mediaId.mediaId, mediaId)
+            equal(data[0].mediaId.userId, "test")
+            equal(data[0].mediaId.title, "test")
+            equal(data[0].mediaId.description, "test")
+            equal(data[0].mediaId.likes, 1)
+            equal(data[0].mediaId.views, 0)
+        })
     })
 
     describe("getMedia", () => {
@@ -127,6 +149,7 @@ describe("MediaService", () => {
 
     after(async () => {
         await Promise.all([
+            mediaDb.query("delete from `like`;"),
             mediaDb.query("delete from media;"),
             mediaDb.query("delete from user;"),
         ])
