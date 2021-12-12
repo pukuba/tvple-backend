@@ -22,7 +22,7 @@ export class LikeEntity {
         Object.assign(this, partial)
     }
 
-    @OneToOne((type) => MediaEntity)
+    @OneToOne(() => MediaEntity)
     @JoinColumn()
     @Column({
         type: "varchar",

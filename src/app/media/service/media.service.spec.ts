@@ -122,6 +122,7 @@ describe("MediaService", () => {
             equal(media.mediaId, mediaId)
             equal(media.views, 1)
             equal(media.likes, 1)
+            equal(media.user.username, "test")
         })
         it("should be return BadRequestException Error", async () => {
             try {

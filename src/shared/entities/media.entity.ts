@@ -8,10 +8,12 @@ import {
     OneToMany,
     PrimaryColumn,
     Table,
+    JoinColumn,
     Index,
+    OneToOne,
 } from "typeorm"
 import * as shortid from "shortid"
-import * as argon2 from "argon2"
+import { UserEntity } from "./user.entity"
 
 @Entity("media")
 export class MediaEntity {
@@ -40,6 +42,10 @@ export class MediaEntity {
         nullable: false,
     })
     userId: string
+
+    @OneToOne(() => UserEntity)
+    @JoinColumn({ referencedColumnName: "id" })
+    user: UserEntity
 
     @Column({
         type: "varchar",

@@ -31,8 +31,18 @@ export class MediaRepository extends Repository<MediaEntity> {
         try {
             return await this.save(media)
         } catch (err) {
+            console.log(err)
             throw new UnprocessableEntityException(err.errmsg)
         }
+    }
+
+    async getMediaWithUser(mediaId: string) {
+        const media: MediaEntity = await this.createQueryBuilder("media")
+            .where("media.mediaId = :mediaId", { mediaId })
+            .leftJoinAndSelect("media.user", "user")
+            .select(["media", "user.username"])
+            .getOne()
+        return media
     }
 
     async getMediaByMediaId(mediaId: string) {
@@ -48,8 +58,7 @@ export class MediaRepository extends Repository<MediaEntity> {
     async searchMedia(page: number = 1, keyword: string = "") {
         const skip = Math.max(page - 1, 0) * 20
         const take = 20
-        const [result, total] = await this.createQueryBuilder()
-            .select()
+        const [result, total] = await this.createQueryBuilder("media")
             .where(`MATCH(title) AGAINST ('${keyword}' IN BOOLEAN MODE)`)
             .orderBy("views", "DESC")
             .skip(skip)

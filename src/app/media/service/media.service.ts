@@ -85,7 +85,7 @@ export class MediaService {
                             url,
                         )
                     return newMedia
-                } catch {
+                } catch (e) {
                     throw new BadRequestException("Error uploading file")
                 }
             },
@@ -94,7 +94,7 @@ export class MediaService {
 
     async getMedia(mediaId: string, ip: string, userId?: string) {
         const [media, view] = await Promise.all([
-            this.mediaRepository.getMediaByMediaId(mediaId),
+            this.mediaRepository.getMediaWithUser(mediaId),
             this.redisService.getData(`${mediaId}${ip}`),
         ])
         if (view === null) {

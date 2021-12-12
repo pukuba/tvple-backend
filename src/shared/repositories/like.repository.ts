@@ -15,8 +15,6 @@ import { configService } from "../services/config.service"
 import { LikeEntity } from "../entities/like.entity"
 import { MediaEntity } from "../entities/media.entity"
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
-
 @EntityRepository(LikeEntity)
 export class LikeRepository extends Repository<LikeEntity> {
     async getLikeByMedia(userId: string, page = 1) {
