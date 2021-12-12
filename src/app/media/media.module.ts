@@ -51,6 +51,10 @@ export class MediaModule {
                 path: "v1/media/:mediaId",
                 method: RequestMethod.PATCH,
             },
+            {
+                path: "v1/like/list/:page",
+                method: RequestMethod.GET,
+            },
         )
     }
 }

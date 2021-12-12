@@ -22,7 +22,7 @@ export class LikeEntity {
         Object.assign(this, partial)
     }
 
-    @OneToOne(() => MediaEntity)
+    @OneToOne(() => MediaEntity, { onDelete: "CASCADE" })
     @JoinColumn({ referencedColumnName: "mediaId", name: "mediaId" })
     media: MediaEntity
 
