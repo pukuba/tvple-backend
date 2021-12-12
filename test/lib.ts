@@ -4,7 +4,20 @@ import * as request from "supertest"
 // Local files
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { configService } from "../src/shared/services/config.service"
-export const beforeRegister = async (app) => {
+
+interface Register {
+    id: string
+    pw: string
+    username: string
+}
+
+interface UnRegister {
+    id: string
+    pw: string
+    token: string
+}
+
+export const beforeRegister = async (app, args: Register) => {
     const verificationToken = jwtManipulationService.generateJwtToken({
         phoneNumber: configService.getEnv("PUKUBA_PHONENUMBER") as string,
         exp: Math.floor(Date.now() / 1000) + 60 * 15,
@@ -15,22 +28,22 @@ export const beforeRegister = async (app) => {
         .send({
             phoneNumber: configService.getEnv("PUKUBA_PHONENUMBER") as string,
             verificationToken,
-            id: "pukuba",
-            password: "test1234!@",
-            username: "pukuba",
+            id: args.id,
+            password: args.pw,
+            username: args.username,
         })
         .expect(201)
     return `Bearer ${body.accessToken}`
 }
 
-export const afterDeleteAccount = async (app, token: string) => {
+export const afterDeleteAccount = async (app, args: UnRegister) => {
     await request(app.getHttpServer())
         .delete("/v1/auth/account")
         .set({ "Content-Type": "application/json" })
-        .set({ Authorization: token })
+        .set({ Authorization: args.token })
         .send({
-            id: "pukuba",
-            password: "test1234!@",
+            id: args.id,
+            password: args.pw,
         })
         .expect(200)
 }

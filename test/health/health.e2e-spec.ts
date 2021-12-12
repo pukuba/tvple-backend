@@ -24,7 +24,11 @@ describe("Health E2E", () => {
         app = moduleFixture.createNestApplication()
         await app.init()
 
-        token = await beforeRegister(app)
+        token = await beforeRegister(app, {
+            id: "pukuba",
+            pw: "test1234!@",
+            username: "pukuba",
+        })
     })
 
     it("/v1/health/live (GET)", async () => {
@@ -41,7 +45,11 @@ describe("Health E2E", () => {
             .expect(200)
 
         equal(body.status, "ok")
-        await afterDeleteAccount(app, token)
+        await afterDeleteAccount(app, {
+            id: "pukuba",
+            pw: "test1234!@",
+            token,
+        })
     })
 
     it("/v1/health/auth (GET) - Not authorization", async () => {
