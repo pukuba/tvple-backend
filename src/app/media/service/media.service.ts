@@ -95,12 +95,12 @@ export class MediaService {
     async getMedia(mediaId: string, ip: string, userId?: string) {
         const [media, view] = await Promise.all([
             this.mediaRepository.getMediaWithUser(mediaId),
-            this.redisService.getData(`${mediaId}${ip}`),
+            this.redisService.getData(`views:${mediaId}:${ip}`),
         ])
         if (view === null) {
             media.views++
             await Promise.all([
-                this.redisService.setOnlyKey(`${mediaId}${ip}`, 3600),
+                this.redisService.setOnlyKey(`views:${mediaId}:${ip}`, 3600),
                 this.mediaRepository.updateMedia(media),
             ])
         }
