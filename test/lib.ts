@@ -9,6 +9,7 @@ interface Register {
     id: string
     pw: string
     username: string
+    phoneNumber: string
 }
 
 interface UnRegister {
@@ -19,14 +20,14 @@ interface UnRegister {
 
 export const beforeRegister = async (app, args: Register) => {
     const verificationToken = jwtManipulationService.generateJwtToken({
-        phoneNumber: configService.getEnv("PUKUBA_PHONENUMBER") as string,
+        phoneNumber: args.phoneNumber,
         exp: Math.floor(Date.now() / 1000) + 60 * 15,
     })
     const { body } = await request(app.getHttpServer())
         .post("/v1/auth/sign-up")
         .set({ "Content-Type": "application/json" })
         .send({
-            phoneNumber: configService.getEnv("PUKUBA_PHONENUMBER") as string,
+            phoneNumber: args.phoneNumber,
             verificationToken,
             id: args.id,
             password: args.pw,

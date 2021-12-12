@@ -28,6 +28,7 @@ describe("Health E2E", () => {
             id: "pukuba",
             pw: "test1234!@",
             username: "pukuba",
+            phoneNumber: "01000000000",
         })
     })
 
