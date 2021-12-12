@@ -45,12 +45,13 @@ export class MediaRepository extends Repository<MediaEntity> {
         return media
     }
 
-    async searchMedia(page: number, keyword: string = "") {
+    async searchMedia(page: number = 1, keyword: string = "") {
         const skip = Math.max(page - 1, 0) * 20
         const take = 20
         const [result, total] = await this.createQueryBuilder()
             .select()
             .where(`MATCH(title) AGAINST ('${keyword}' IN BOOLEAN MODE)`)
+            .orderBy("views", "DESC")
             .skip(skip)
             .take(take)
             .getManyAndCount()

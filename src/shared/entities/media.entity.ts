@@ -79,7 +79,7 @@ export class MediaEntity {
     views: number
 
     @BeforeInsert()
-    setId() {
+    beforeInsert() {
         this.mediaId = shortid.generate()
         this.date = new Date()
         this.views = 0

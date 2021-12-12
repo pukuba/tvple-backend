@@ -31,10 +31,7 @@ export class MediaService {
         private readonly likeRepository: LikeRepository,
     ) {}
 
-    async getLikeByMedia(
-        userId: string,
-        page = 1,
-    ): Promise<(LikeEntity & { mediaId: MediaEntity })[]> {
+    async getLikeByMedia(userId: string, page = 1) {
         return await this.likeRepository.getLikeByMedia(userId, page)
     }
 

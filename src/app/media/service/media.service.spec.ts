@@ -104,14 +104,14 @@ describe("MediaService", () => {
 
     describe("getLikeMedia", () => {
         it("should be return MediaEntity", async () => {
-            const data = await service.getLikeByMedia("test")
-            equal(data.length, 1)
-            equal(data[0].mediaId.mediaId, mediaId)
-            equal(data[0].mediaId.userId, "test")
-            equal(data[0].mediaId.title, "test")
-            equal(data[0].mediaId.description, "test")
-            equal(data[0].mediaId.likes, 1)
-            equal(data[0].mediaId.views, 0)
+            const data = await service.getLikeByMedia("test", 1)
+            equal(data.count, 1)
+            equal(data.data[0].mediaId, mediaId)
+            equal(data.data[0].userId, "test")
+            equal(data.data[0].title, "test")
+            equal(data.data[0].description, "test")
+            equal(data.data[0].likes, 1)
+            equal(data.data[0].views, 0)
         })
     })
 
@@ -121,6 +121,7 @@ describe("MediaService", () => {
             equal(media.userId, "test")
             equal(media.mediaId, mediaId)
             equal(media.views, 1)
+            equal(media.likes, 1)
         })
         it("should be return BadRequestException Error", async () => {
             try {
@@ -137,6 +138,8 @@ describe("MediaService", () => {
             equal(pageInfo.count, 1)
             equal(pageInfo.data[0].mediaId, mediaId)
             equal(pageInfo.data[0].title.includes("t"), true)
+            equal(pageInfo.data[0].likes, 1)
+            equal(pageInfo.data[0].views, 1)
         })
     })
 

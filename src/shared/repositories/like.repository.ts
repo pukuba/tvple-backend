@@ -15,17 +15,32 @@ import { configService } from "../services/config.service"
 import { LikeEntity } from "../entities/like.entity"
 import { MediaEntity } from "../entities/media.entity"
 
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+
 @EntityRepository(LikeEntity)
 export class LikeRepository extends Repository<LikeEntity> {
     async getLikeByMedia(userId: string, page = 1) {
         const skip = Math.max(page - 1, 0) * 20
         const take = 20
-        return (await this.createQueryBuilder("like")
+
+        const [data, count] = await this.createQueryBuilder("like")
             .leftJoinAndSelect("like.mediaId", "media")
             .where("like.userId = :userId", { userId: userId })
-            .take(take)
             .skip(skip)
-            .getMany()) as (LikeEntity & { mediaId: MediaEntity })[]
+            .take(take)
+            .getManyAndCount()
+
+        return {
+            data: (data as (LikeEntity & { mediaId: MediaEntity })[]).map(
+                (likeEntity): Omit<MediaEntity, "beforeInsert"> => {
+                    const data = likeEntity.mediaId as MediaEntity
+                    return {
+                        ...data,
+                    }
+                },
+            ),
+            count,
+        }
     }
 
     async getLikeStatus(userId: string, mediaId: string) {
