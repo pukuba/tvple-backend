@@ -141,11 +141,11 @@ describe("MediaService", () => {
             const data = await service.getLikeByMedia("test", 1)
             equal(data.count, 2)
             try {
-                equal(data.data[0].media.mediaId, mediaId)
-                equal(data.data[1].media.mediaId, mediaId1)
+                equal(data.data[0].mediaId, mediaId)
+                equal(data.data[1].mediaId, mediaId1)
             } catch {
-                equal(data.data[0].media.mediaId, mediaId1)
-                equal(data.data[1].media.mediaId, mediaId)
+                equal(data.data[0].mediaId, mediaId1)
+                equal(data.data[1].mediaId, mediaId)
             }
         })
     })

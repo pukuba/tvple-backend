@@ -27,8 +27,11 @@ export class LikeRepository extends Repository<LikeEntity> {
             .skip(skip)
             .take(take)
             .getManyAndCount()
+
         return {
-            data: data,
+            data: data.map((x) => {
+                return { ...x.media }
+            }),
             count,
         }
     }
