@@ -61,9 +61,55 @@ describe("Media E2E", () => {
             .field("title", "test title")
             .field("description", "test media description")
             .attach("file", "./test/sample-mp4-file-small.mp4")
+            .expect(201)
 
         equal(body.userId, "pukuba")
         equal(body.title, "test title")
         mediaId1 = body.mediaId
     })
+
+    it("/v1/media/like/:mediaId (POST) - token1", async () => {
+        const { body } = await request(app.getHttpServer())
+            .post(`/v1/media/like/${mediaId1}`)
+            .set("Authorization", token1)
+            .expect(201)
+
+        equal(body.userId, "pukuba")
+        equal(body.mediaId, mediaId1)
+    })
+
+    it("/v1/media/like/:mediaId (POST) - token2", async () => {
+        const { body } = await request(app.getHttpServer())
+            .post(`/v1/media/like/${mediaId1}`)
+            .set("Authorization", token2)
+            .expect(201)
+
+        equal(body.userId, "pukuba")
+        equal(body.mediaId, mediaId1)
+    })
+
+    // it("/v1/media/like/list/:page (GET) - token1", async () => {
+    //     const { body } = await request(app.getHttpServer())
+    //         .get(`/v1/media/like/list/1`)
+    //         .set("Authorization", token1)
+    //         .expect(200)
+
+    //     equal(body.data.length, 1)
+    //     equal(body.data[0].userId, "pukuba")
+    //     equal(body.data[0].mediaId, mediaId1)
+    //     equal(body.data[0].likes, 2)
+    // })
+
+    // it("/v1/media/like/list/:page (GET) - token2", async () => {
+    //     const { body } = await request(app.getHttpServer())
+    //         .get(`/v1/media/like/list/1`)
+    //         .set("Authorization", token2)
+    //         .expect(200)
+
+    //     console.log(body.data)
+    //     equal(body.data.length, 1)
+    //     equal(body.data[0].userId, "pukuba")
+    //     equal(body.data[0].mediaId, mediaId1)
+    //     equal(body.data[0].likes, 2)
+    // })
 })
