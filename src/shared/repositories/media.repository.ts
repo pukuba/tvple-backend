@@ -63,16 +63,32 @@ export class MediaRepository extends Repository<MediaEntity> {
         const skip = Math.max(page - 1, 0) * 20
         const take = 20
 
-        const [result, total] = await this.createQueryBuilder("media")
-            .select("media")
-            .where(`MATCH(title) AGAINST ('${keyword}' IN BOOLEAN MODE)`)
-            .orderBy("views", "DESC")
-            .skip(skip)
-            .limit(take)
-            .getManyAndCount()
+        // const [result, total] = await this.createQueryBuilder("media")
+        //     .select("media")
+        //     .where(
+        //         `MATCH(title) AGAINST ('${keyword}' IN BOOLEAN MODE)`,
+        //     )
+        //     .orderBy("views", "DESC")
+        //     .skip(skip)
+        //     .limit(take)
+        //     .getManyAndCount()
+
+        const [result, total] = await Promise.all([
+            this.query(`
+                select * from media where match(title) 
+                against('${keyword}' IN BOOLEAN MODE)
+                order by views desc
+                limit ${skip}, ${take}
+            `),
+            this.query(`
+                select count(DISTINCT mediaId) as total from media where match(title)
+                against('${keyword}' IN BOOLEAN MODE)
+            `),
+        ])
+
         return {
             data: result,
-            count: total,
+            count: ~~total[0].total,
         }
     }
 
