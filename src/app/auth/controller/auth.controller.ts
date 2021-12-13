@@ -11,6 +11,7 @@ import {
     Query,
     Controller,
     UsePipes,
+    ParseIntPipe,
 } from "@nestjs/common"
 import {
     ApiBearerAuth,
@@ -34,14 +35,12 @@ import {
 } from "../dto"
 import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { AuthService } from "../service/auth.service"
-import { ValidationPipe } from "../../../shared/pipes/validation.pipe"
 
 @ApiTags("v1/auth")
 @Controller("v1/auth")
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @UsePipes(new ValidationPipe())
     @Post("sign-in")
     @ApiOperation({
         summary: "로그인",
@@ -57,7 +56,6 @@ export class AuthController {
         return await this.authService.signIn(user)
     }
 
-    @UsePipes(new ValidationPipe())
     @Post("sign-up")
     @ApiOperation({
         summary: "회원가입",
@@ -68,7 +66,6 @@ export class AuthController {
         return this.authService.signUp(userData)
     }
 
-    @UsePipes(new ValidationPipe())
     @Post("code")
     @ApiOperation({
         summary: "휴대번호 인증번호 발송",
@@ -113,7 +110,6 @@ export class AuthController {
         return this.authService.signOut(bearer)
     }
 
-    @UsePipes(new ValidationPipe())
     @Delete("account")
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()

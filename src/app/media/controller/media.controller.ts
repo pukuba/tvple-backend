@@ -14,6 +14,7 @@ import {
     UseInterceptors,
     Ip,
     UploadedFile,
+    ParseIntPipe,
 } from "@nestjs/common"
 import { FileInterceptor } from "@nestjs/platform-express"
 import { AuthGuard } from "@nestjs/passport"
@@ -55,8 +56,11 @@ export class MediaController {
     @ApiOperation({ summary: "미디어 검색" })
     @ApiQuery({ type: SearchMediaDto })
     @ApiOkResponse({ type: SearchMediaResponseDto, description: "검색 성공" })
-    async searchMedia(@Query() { page, keyword }) {
-        return this.mediaService.searchMedia(page, keyword)
+    async searchMedia(@Query() searchMediaDto: SearchMediaDto) {
+        return this.mediaService.searchMedia(
+            searchMediaDto.page,
+            searchMediaDto.keyword,
+        )
     }
 
     @ApiBearerAuth()
@@ -111,7 +115,7 @@ export class MediaController {
     })
     async getLikeByMedia(
         @Headers("authorization") bearer: string,
-        @Param("page") page: number = 1,
+        @Param("page", ParseIntPipe) page: number = 1,
     ) {
         return this.mediaService.getLikeByMedia(
             jwtManipulationService.decodeJwtToken(bearer, "id"),
