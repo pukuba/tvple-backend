@@ -113,4 +113,17 @@ describe("Media E2E", () => {
         equal(body.data[0].likes, 2)
         equal(body.count, 1)
     })
+
+    it("/v1/media/search (GET)", async () => {
+        const { body } = await request(app.getHttpServer())
+            .get("/v1/media/search")
+            .set("Authorization", token1)
+            .query({ keyword: "test" })
+            .expect(200)
+
+        equal(body.data.length, 1)
+        equal(body.data[0].userId, "pukuba")
+        equal(body.data[0].mediaId, mediaId1)
+        equal(body.data[0].likes, 2)
+    })
 })
