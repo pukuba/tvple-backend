@@ -127,4 +127,40 @@ describe("Media E2E", () => {
         equal(body.data[0].mediaId, mediaId1)
         equal(body.data[0].likes, 2)
     })
+
+    it("/v1/media/:mediaId (GET)", async () => {
+        const { body } = await request(app.getHttpServer())
+            .get(`/v1/media/${mediaId1}`)
+            .set("Authorization", token1)
+            .expect(200)
+
+        equal(body.userId, "pukuba")
+        equal(body.mediaId, mediaId1)
+        equal(body.title, "test title")
+        equal(body.description, "test media description")
+        equal(body.likes, 2)
+        equal(body.views, 1)
+    })
+
+    it("/v1/media/:mediaId (PATCH)", async () => {
+        const { body } = await request(app.getHttpServer())
+            .patch(`/v1/media/${mediaId1}`)
+            .set("Authorization", token1)
+            .send({ title: "test title2" })
+            .expect(200)
+
+        equal(body.userId, "pukuba")
+        equal(body.mediaId, mediaId1)
+        equal(body.title, "test title2")
+        equal(body.description, "test media description")
+        equal(body.likes, 2)
+        equal(body.views, 1)
+    })
+
+    it("/v1/media/:mediaId (DELETE)", async () => {
+        await request(app.getHttpServer())
+            .delete(`/v1/media/${mediaId1}`)
+            .set("Authorization", token1)
+            .expect(200)
+    })
 })
