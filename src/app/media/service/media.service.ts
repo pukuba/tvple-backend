@@ -107,8 +107,11 @@ export class MediaService {
         return media
     }
 
-    async searchMedia(page: number, keyword: string) {
-        return await this.mediaRepository.searchMedia(page, keyword)
+    async searchMedia(page: number, keyword?: string, author?: string) {
+        if (author) {
+            return await this.mediaRepository.searchMediaByAuthor(page, keyword)
+        }
+        return await this.mediaRepository.searchMediaByKeyword(page, keyword)
     }
 
     async deleteMedia(userId: string, mediaId: string) {

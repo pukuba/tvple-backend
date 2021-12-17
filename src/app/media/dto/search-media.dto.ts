@@ -7,6 +7,7 @@ import {
     IsNumberString,
     IsString,
     Length,
+    MaxLength,
 } from "class-validator"
 import { MediaEntity } from "src/shared/entities/media.entity"
 
@@ -20,12 +21,19 @@ export class SearchMediaDto {
     page: number
 
     @ApiProperty({
-        required: true,
+        required: false,
         example: "search-keyword",
     })
     @Length(0, 200)
     @IsString()
     keyword: string
+
+    @ApiProperty({
+        required: false,
+        example: "author",
+    })
+    @MaxLength(20)
+    author: string
 }
 
 export class SearchMediaResponseDto {

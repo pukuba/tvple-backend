@@ -60,6 +60,7 @@ export class MediaController {
         return this.mediaService.searchMedia(
             searchMediaDto.page,
             searchMediaDto.keyword,
+            searchMediaDto.author,
         )
     }
 

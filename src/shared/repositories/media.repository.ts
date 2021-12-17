@@ -59,7 +59,7 @@ export class MediaRepository extends Repository<MediaEntity> {
         return media
     }
 
-    async searchMedia(page: number = 1, keyword: string = "") {
+    async searchMediaByKeyword(page: number = 1, keyword: string = "") {
         const skip = Math.max(page - 1, 0) * 20
         const take = 20
 
@@ -78,6 +78,22 @@ export class MediaRepository extends Repository<MediaEntity> {
         return {
             data: result,
             count: ~~total[0].total,
+        }
+    }
+
+    async searchMediaByAuthor(page: number = 1, author: string) {
+        const skip = Math.max(page - 1, 0) * 20
+        const take = 20
+
+        const [result, total] = await this.createQueryBuilder()
+            .select()
+            .where("user.username = :author", { author })
+            .skip(skip)
+            .take(take)
+            .getManyAndCount()
+        return {
+            data: result,
+            count: total,
         }
     }
 
