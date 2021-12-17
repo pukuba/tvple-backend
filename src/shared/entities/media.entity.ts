@@ -22,12 +22,7 @@ export class MediaEntity {
         Object.assign(this, partial)
     }
 
-    @PrimaryColumn({
-        type: "varchar",
-        length: 20,
-        primary: true,
-        nullable: false,
-    })
+    @PrimaryGeneratedColumn("uuid")
     mediaId: string
 
     @Column({

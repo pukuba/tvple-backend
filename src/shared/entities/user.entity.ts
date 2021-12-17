@@ -50,11 +50,6 @@ export class UserEntity {
     })
     password: string
 
-    @BeforeInsert()
-    hashPassword() {
-        this.password = crypto.hashSync(this.password, crypto.genSaltSync(10))
-    }
-
     @Column({
         type: "text",
         nullable: false,
@@ -81,6 +76,7 @@ export class UserEntity {
 
     @BeforeInsert()
     fillDeafults() {
+        this.password = crypto.hashSync(this.password, crypto.genSaltSync(10))
         this.profileImage = ""
         this.biography = ""
         this.link = ""
