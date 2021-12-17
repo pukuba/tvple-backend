@@ -42,5 +42,5 @@ export class LikeEntity {
     userId: string
 
     @PrimaryGeneratedColumn("uuid")
-    id: string
+    likeId: string
 }
