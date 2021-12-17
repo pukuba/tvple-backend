@@ -85,9 +85,9 @@ export class MediaRepository extends Repository<MediaEntity> {
         const skip = Math.max(page - 1, 0) * 20
         const take = 20
 
-        const [result, total] = await this.createQueryBuilder()
+        const [result, total] = await this.createQueryBuilder("media")
             .select()
-            .where("user.username = :author", { author })
+            .where("media.userId = :author", { author })
             .skip(skip)
             .take(take)
             .getManyAndCount()

@@ -109,7 +109,7 @@ export class MediaService {
 
     async searchMedia(page: number, keyword?: string, author?: string) {
         if (author) {
-            return await this.mediaRepository.searchMediaByAuthor(page, keyword)
+            return await this.mediaRepository.searchMediaByAuthor(page, author)
         }
         return await this.mediaRepository.searchMediaByKeyword(page, keyword)
     }
