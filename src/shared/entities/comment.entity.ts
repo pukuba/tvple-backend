@@ -64,4 +64,11 @@ export class CommentEntity {
         nullable: false,
     })
     posY: number
+
+    @Column({
+        type: "varchar",
+        length: 7,
+        nullable: false,
+    })
+    color: string
 }
