@@ -26,13 +26,12 @@ import { AuthGuard } from "@nestjs/passport"
 
 // Local files
 import { CreateCommentDto, CreateCommentResponseDto } from "../dto"
-import { JwtAuthGuard } from "src/shared/guards/role.guard"
 import { CommentService } from "../service/comment.service"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 
 @ApiTags("v1/comment")
 @Controller("v1/comment")
-export class AuthController {
+export class CommentController {
     constructor(private readonly commentService: CommentService) {}
 
     @Post("/")
