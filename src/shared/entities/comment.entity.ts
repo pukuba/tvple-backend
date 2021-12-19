@@ -59,13 +59,13 @@ export class CommentEntity {
     timeStamp: number
 
     @Column({
-        type: "int",
+        type: "float",
         nullable: false,
     })
     posX: number
 
     @Column({
-        type: "int",
+        type: "float",
         nullable: false,
     })
     posY: number
