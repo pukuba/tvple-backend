@@ -15,12 +15,17 @@ import {
     ManyToOne,
 } from "typeorm"
 import { UserEntity } from "./user.entity"
+import { MediaEntity } from "./media.entity"
 
 @Entity("comment")
 export class CommentEntity {
     constructor(partial: Partial<CommentEntity>) {
         Object.assign(this, partial)
     }
+
+    @ManyToOne(() => MediaEntity, { onDelete: "CASCADE" })
+    @JoinColumn({ referencedColumnName: "mediaId", name: "mediaId" })
+    media: MediaEntity
 
     @PrimaryGeneratedColumn("uuid")
     commentId: string

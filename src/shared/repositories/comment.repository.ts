@@ -44,4 +44,23 @@ export class CommentRepository extends Repository<CommentEntity> {
             )
         }
     }
+
+    async deleteComment(commentId: string, userId: string) {
+        const data = await this.createQueryBuilder("comment")
+            .where("like.commentId = :commentId", { commentId })
+            .leftJoinAndSelect("like.media", "media")
+            .getOne()
+        if (data.userId === userId || data.media.userId === userId) {
+            await this.delete({
+                commentId: commentId,
+            })
+            return true
+        }
+        throw new ForbiddenException("권한이 없습니다")
+    }
+
+    async getCommentByMediaId(mediaId: string) {
+        const data = await this.find({ where: { mediaId } })
+        return data
+    }
 }
