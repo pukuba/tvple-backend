@@ -10,23 +10,13 @@ import {
 import { Repository, EntityRepository } from "typeorm"
 
 // Local files
-import { UploadMediaDto, UpdateMediaDto } from "src/app/media/dto"
+import { CreateCommentDto } from "src/app/comment/dto"
 import { configService } from "../services/config.service"
 import { CommentEntity } from "../entities/comment.entity"
 
-interface CreateCommentInput {
-    mediaId: string
-    userId: string
-    content: string
-    timeStamp: number
-    posX: number
-    posY: number
-    color: string
-}
-
 @EntityRepository(CommentEntity)
 export class CommentRepository extends Repository<CommentEntity> {
-    async createComment(args: CreateCommentInput) {
+    async createComment(args: CreateCommentDto & { userId: string }) {
         const comment = new CommentEntity({
             mediaId: args.mediaId,
             userId: args.userId,

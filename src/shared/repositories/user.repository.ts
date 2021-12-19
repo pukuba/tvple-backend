@@ -103,4 +103,12 @@ export class UserRepository extends Repository<UserEntity> {
             throw new NotFoundException("계정이 존재하지 않습니다")
         }
     }
+
+    async updateUser(user: UserEntity) {
+        try {
+            await this.save(user)
+        } catch (error) {
+            throw new UnprocessableEntityException(error.errmsg)
+        }
+    }
 }
