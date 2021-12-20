@@ -21,6 +21,7 @@ import { MediaEntity } from "src/shared/entities/media.entity"
 import { LikeEntity } from "src/shared/entities/like.entity"
 import { UserRepository } from "src/shared/repositories/user.repository"
 import { UserEntity } from "src/shared/entities/user.entity"
+import { StatusOk } from "src/shared/types"
 
 @Injectable()
 export class CommentService {
@@ -37,7 +38,7 @@ export class CommentService {
         return await this.commentRepository.getCommentByMediaId(mediaId)
     }
 
-    async deleteComment(commentId: string, userId: string) {
+    async deleteComment(commentId: string, userId: string): Promise<StatusOk> {
         return await this.commentRepository.deleteComment(commentId, userId)
     }
 

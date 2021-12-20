@@ -37,14 +37,17 @@ export class CommentRepository extends Repository<CommentEntity> {
 
     async deleteComment(commentId: string, userId: string) {
         const data = await this.createQueryBuilder("comment")
-            .where("like.commentId = :commentId", { commentId })
-            .leftJoinAndSelect("like.media", "media")
+            .where("comment.commentId = :commentId", { commentId })
+            .leftJoinAndSelect("comment.media", "media")
             .getOne()
-        if (data.userId === userId || data.media.userId === userId) {
+        if (data?.userId === userId || data?.media?.userId === userId) {
             await this.delete({
                 commentId: commentId,
             })
-            return true
+            return {
+                status: "ok",
+                message: "정상적으로 삭제되었습니다",
+            }
         }
         throw new ForbiddenException("권한이 없습니다")
     }

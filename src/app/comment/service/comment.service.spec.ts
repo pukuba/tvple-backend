@@ -6,6 +6,7 @@ import {
     HttpStatus,
     BadRequestException,
     UnauthorizedException,
+    ForbiddenException,
 } from "@nestjs/common"
 // Other dependencies
 import { deepStrictEqual as equal } from "assert"
@@ -192,6 +193,28 @@ describe("MediaService", () => {
         it("should be return CommentEntity[] - 2", async () => {
             const result = await service.getCommentByMediaId(mediaId2)
             equal(result.length, 0)
+        })
+    })
+
+    describe("deleteComment", async () => {
+        it("should be throw ForbiddenException error", async () => {
+            try {
+                await service.deleteComment(mediaId1, "testtest")
+            } catch (e) {
+                equal(e instanceof ForbiddenException, true)
+                equal(e.status, 403)
+                equal(e.response, {
+                    statusCode: 403,
+                    message: "권한이 없습니다",
+                    error: "Forbidden",
+                })
+            }
+        })
+
+        it("should be return StatusOK", async () => {
+            const result = await service.deleteComment(commentId1, "test")
+            equal(result.status, "ok")
+            equal(result.message, "정상적으로 삭제되었습니다")
         })
     })
 
