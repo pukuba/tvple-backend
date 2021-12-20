@@ -10,7 +10,7 @@ import { Connection } from "typeorm"
 import { AuthModule } from "./app/auth/auth.module"
 import { ConfigModule } from "@nestjs/config"
 import { AuthService } from "./app/auth/service/auth.service"
-import { CommentModule } from "./app/comment/commment.module"
+import { CommentModule } from "./app/comment/comment.module"
 import { HealthModule } from "./app/health/health.module"
 import { RedisService } from "./shared/services/redis.service"
 
