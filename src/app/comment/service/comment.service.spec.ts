@@ -24,7 +24,8 @@ describe("MediaService", () => {
     let token: string
     let mediaId1: string
     let mediaId2: string
-    let commentId: string
+    let commentId1: string
+    let commentId2: string
     before(async () => {
         const module = await Test.createTestingModule({
             imports: [
@@ -127,7 +128,7 @@ describe("MediaService", () => {
             }
         })
 
-        it("should be return CommentEntity", async () => {
+        it("should be return CommentEntity - 1", async () => {
             const result = await service.createComment(
                 {
                     mediaId: mediaId1,
@@ -145,9 +146,55 @@ describe("MediaService", () => {
             equal(result.posY, 22.22)
             equal(result.color, "#ffffff")
             equal(result.timeStamp, 111.1)
-            commentId = result.commentId
+            commentId1 = result.commentId
+        })
+
+        it("should be return CommentEntitiy - 2", async () => {
+            const result = await service.createComment(
+                {
+                    mediaId: mediaId1,
+                    content: "test-comment-2",
+                    posX: 22.22,
+                    posY: 11.11,
+                    color: "#000000",
+                    timeStamp: 11.1,
+                },
+                "test",
+            )
+            equal(result.mediaId, mediaId1)
+            equal(result.content, "test-comment-2")
+            equal(result.posX, 22.22)
+            equal(result.posY, 11.11)
+            equal(result.color, "#000000")
+            equal(result.timeStamp, 11.1)
+            commentId2 = result.commentId
         })
     })
+
+    describe("getCommentByMediaId", async () => {
+        it("should be return CommentEntity[] - 1", async () => {
+            const result = await service.getCommentByMediaId(mediaId1)
+            equal(result.length, 2)
+            equal(result[0].mediaId, mediaId1)
+            equal(result[0].content, "test-comment-2")
+            equal(result[0].posX, 22.22)
+            equal(result[0].posY, 11.11)
+            equal(result[0].color, "#000000")
+            equal(result[0].timeStamp, 11.1)
+            equal(result[1].mediaId, mediaId1)
+            equal(result[1].content, "test-comment")
+            equal(result[1].posX, 11.11)
+            equal(result[1].posY, 22.22)
+            equal(result[1].color, "#ffffff")
+            equal(result[1].timeStamp, 111.1)
+        })
+
+        it("should be return CommentEntity[] - 2", async () => {
+            const result = await service.getCommentByMediaId(mediaId2)
+            equal(result.length, 0)
+        })
+    })
+
     after(async () => {
         await Promise.all([
             mediaDb.query("delete from `like`;"),

@@ -50,7 +50,9 @@ export class CommentRepository extends Repository<CommentEntity> {
     }
 
     async getCommentByMediaId(mediaId: string) {
-        const data = await this.find({ where: { mediaId } })
-        return data
+        return await this.find({
+            where: { mediaId },
+            order: { timeStamp: "ASC" },
+        })
     }
 }
