@@ -174,7 +174,7 @@ describe("MediaService", () => {
 
     describe("getCommentByMediaId", async () => {
         it("should be return CommentEntity[] - 1", async () => {
-            const result = await service.getCommentByMediaId(mediaId1)
+            const result = (await service.getCommentByMediaId(mediaId1)).data
             equal(result.length, 2)
             equal(result[0].mediaId, mediaId1)
             equal(result[0].content, "test-comment-2")
@@ -191,7 +191,7 @@ describe("MediaService", () => {
         })
 
         it("should be return CommentEntity[] - 2", async () => {
-            const result = await service.getCommentByMediaId(mediaId2)
+            const result = (await service.getCommentByMediaId(mediaId2)).data
             equal(result.length, 0)
         })
     })

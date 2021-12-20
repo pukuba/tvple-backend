@@ -21,11 +21,17 @@ import {
     ApiCreatedResponse,
     ApiOkResponse,
     ApiBody,
+    ApiParam,
 } from "@nestjs/swagger"
 import { AuthGuard } from "@nestjs/passport"
 
 // Local files
-import { CreateCommentDto, CreateCommentResponseDto } from "../dto"
+import {
+    CreateCommentDto,
+    CreateCommentResponseDto,
+    DeleteCommentResponseDto,
+    GetCommentDto,
+} from "../dto"
 import { CommentService } from "../service/comment.service"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 
@@ -51,5 +57,35 @@ export class CommentController {
             body,
             jwtManipulationService.decodeJwtToken(bearer, "id"),
         )
+    }
+
+    @Delete("/:commentId")
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard("jwt"))
+    @ApiOperation({ summary: "댓글 삭제" })
+    @ApiOkResponse({
+        description: "정상적으로 삭제되었습니다",
+        type: DeleteCommentResponseDto,
+    })
+    @ApiParam({ name: "commentId", type: "string", required: true })
+    async deleteComment(
+        @Param("commentId") commentId: string,
+        @Headers("authorization") bearer: string,
+    ) {
+        return this.commentService.deleteComment(
+            commentId,
+            jwtManipulationService.decodeJwtToken(bearer, "id"),
+        )
+    }
+
+    @Get("/:mediaId")
+    @ApiOperation({ summary: "댓글 목록" })
+    @ApiOkResponse({
+        description: "정상적으로 가져왔습니다",
+        type: GetCommentDto,
+    })
+    @ApiParam({ name: "mediaId", type: "string", required: true })
+    async getComment(@Param("mediaId") mediaId: string) {
+        return this.commentService.getCommentByMediaId(mediaId)
     }
 }
