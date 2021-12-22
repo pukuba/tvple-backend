@@ -21,3 +21,67 @@ export class GetCommentDto {
     })
     data: CommentEntity[]
 }
+
+export class GetCommentByIdDto {
+    @ApiProperty({
+        description: "상세 정보",
+        type: "mediaId",
+        example: "aaabbbcccc-1121231",
+    })
+    mediaId: string
+
+    @ApiProperty({
+        description: "댓글 아이디",
+        type: "commentId",
+        example: "aaabbbcccc-1121231",
+    })
+    commentId: string
+
+    @ApiProperty({
+        description: "유저 정보",
+        type: "object",
+        example: {
+            username: "pukuba",
+            userId: "pukuba",
+        },
+    })
+    user: {
+        username: string
+        userId: string
+    }
+
+    @ApiProperty({
+        description: "댓글 내용",
+        type: "string",
+        example: "댓글내용",
+    })
+    content: string
+
+    @ApiProperty({
+        description: "댓글 시간",
+        type: "float",
+        example: 122.41,
+    })
+    timeStamp: number
+
+    @ApiProperty({
+        description: "댓글 위치",
+        type: "float",
+        example: 4.4,
+    })
+    posX: number
+
+    @ApiProperty({
+        description: "댓글 위치",
+        type: "float",
+        example: 22.22,
+    })
+    posY: number
+
+    @ApiProperty({
+        description: "댓글 색상",
+        type: "varchar",
+        example: "#ffffff",
+    })
+    color: string
+}

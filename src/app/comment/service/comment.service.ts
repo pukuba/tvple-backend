@@ -71,4 +71,8 @@ export class CommentService {
             throw new BadRequestException("댓글 작성에 실패했습니다")
         }
     }
+
+    async getCommentInfo(commentId: string) {
+        return await this.commentRepository.getCommentInfo(commentId)
+    }
 }

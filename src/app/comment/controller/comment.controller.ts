@@ -31,6 +31,7 @@ import {
     CreateCommentResponseDto,
     DeleteCommentResponseDto,
     GetCommentDto,
+    GetCommentByIdDto,
 } from "../dto"
 import { CommentService } from "../service/comment.service"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
@@ -89,5 +90,16 @@ export class CommentController {
     @ApiParam({ name: "mediaId", type: "string", required: true })
     async getComment(@Param("mediaId") mediaId: string) {
         return this.commentService.getCommentByMediaId(mediaId)
+    }
+
+    @Get("/info/:commentId")
+    @ApiOperation({ summary: "댓글 상세정보" })
+    @ApiOkResponse({
+        description: "정상적으로 가져왔습니다",
+        type: GetCommentByIdDto,
+    })
+    @ApiParam({ name: "commentId", type: "string", required: true })
+    async getCommentInfo(@Param("commentId") commentId: string) {
+        return this.commentService.getCommentInfo(commentId)
     }
 }

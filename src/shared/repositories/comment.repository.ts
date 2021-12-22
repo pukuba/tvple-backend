@@ -54,6 +54,15 @@ export class CommentRepository extends Repository<CommentEntity> {
         throw new ForbiddenException("권한이 없습니다")
     }
 
+    async getCommentInfo(commentId: string) {
+        const comment = await this.createQueryBuilder("comment")
+            .where("comment.commentId = :commentId", { commentId })
+            .leftJoinAndSelect("comment.user", "user")
+            .select(["comment", "user.username", "user.id"])
+            .getOne()
+        return comment
+    }
+
     async getCommentByMediaId(mediaId: string) {
         return {
             data: await this.find({

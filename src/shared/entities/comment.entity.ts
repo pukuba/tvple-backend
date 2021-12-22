@@ -27,6 +27,10 @@ export class CommentEntity {
     @JoinColumn({ referencedColumnName: "mediaId", name: "mediaId" })
     media: MediaEntity
 
+    @ManyToOne(() => UserEntity, { onDelete: "CASCADE" })
+    @JoinColumn({ referencedColumnName: "id", name: "userId" })
+    user: UserEntity
+
     @PrimaryGeneratedColumn("uuid")
     commentId: string
 
