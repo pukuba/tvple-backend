@@ -36,7 +36,7 @@ import { CommentEntity } from "src/shared/entities/comment.entity"
 export class CommentModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(BlacklistMiddleware).forRoutes({
-            path: "v1/comment",
+            path: "v1/comment/:mediaId",
             method: RequestMethod.POST,
         }),
             consumer.apply(BlacklistMiddleware).forRoutes({

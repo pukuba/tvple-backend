@@ -16,7 +16,9 @@ import { CommentEntity } from "../entities/comment.entity"
 
 @EntityRepository(CommentEntity)
 export class CommentRepository extends Repository<CommentEntity> {
-    async createComment(args: CreateCommentDto & { userId: string }) {
+    async createComment(
+        args: CreateCommentDto & { userId: string; mediaId: string },
+    ) {
         const comment = new CommentEntity({
             mediaId: args.mediaId,
             userId: args.userId,

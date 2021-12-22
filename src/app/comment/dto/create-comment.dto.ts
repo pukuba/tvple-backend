@@ -6,13 +6,6 @@ export class CreateCommentDto {
     @ApiProperty({
         type: "string",
         example: "string",
-        description: "영상의 id",
-    })
-    mediaId: string
-
-    @ApiProperty({
-        type: "string",
-        example: "string",
         description: "댓글의 내용",
     })
     content: string
@@ -46,9 +39,6 @@ export class CreateCommentDto {
 }
 
 export class CreateCommentResponseDto {
-    @ApiProperty({ example: "string" })
-    mediaId: string
-
     @ApiProperty({ example: "string" })
     commmentId: string
 

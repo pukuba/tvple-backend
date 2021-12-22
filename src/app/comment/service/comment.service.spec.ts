@@ -85,13 +85,13 @@ describe("MediaService", () => {
             try {
                 await service.createComment(
                     {
-                        mediaId: "aabbccddeeffgg",
                         content: "test",
                         posX: 11,
                         posY: 22,
                         color: "#ffffff",
                         timeStamp: 111.1,
                     },
+                    "aabbccddeeffgg",
                     "test",
                 )
             } catch (e) {
@@ -109,13 +109,13 @@ describe("MediaService", () => {
             try {
                 await service.createComment(
                     {
-                        mediaId: mediaId1,
                         content: "test",
                         posX: 11,
                         posY: 22,
                         color: "#123456",
                         timeStamp: 111.1,
                     },
+                    mediaId1,
                     "test",
                 )
             } catch (e) {
@@ -132,13 +132,13 @@ describe("MediaService", () => {
         it("should be return CommentEntity - 1", async () => {
             const result = await service.createComment(
                 {
-                    mediaId: mediaId1,
                     content: "test-comment",
                     posX: 11.11,
                     posY: 22.22,
                     color: "#ffffff",
                     timeStamp: 111.1,
                 },
+                mediaId1,
                 "test",
             )
             equal(result.mediaId, mediaId1)
@@ -153,13 +153,13 @@ describe("MediaService", () => {
         it("should be return CommentEntitiy - 2", async () => {
             const result = await service.createComment(
                 {
-                    mediaId: mediaId1,
                     content: "test-comment-2",
                     posX: 22.22,
                     posY: 11.11,
                     color: "#000000",
                     timeStamp: 11.1,
                 },
+                mediaId1,
                 "test",
             )
             equal(result.mediaId, mediaId1)

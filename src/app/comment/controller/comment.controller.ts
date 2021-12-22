@@ -40,7 +40,7 @@ import { jwtManipulationService } from "src/shared/services/jwt.manipulation.ser
 export class CommentController {
     constructor(private readonly commentService: CommentService) {}
 
-    @Post("/")
+    @Post("/:mediaId")
     @ApiBearerAuth()
     @UseGuards(AuthGuard("jwt"))
     @ApiOperation({ summary: "댓글 작성" })
@@ -50,11 +50,13 @@ export class CommentController {
     })
     @ApiBody({ type: CreateCommentDto })
     async createMedia(
+        @Param("mediaId") mediaId: string,
         @Body() body: CreateCommentDto,
         @Headers("authorization") bearer: string,
     ) {
         return this.commentService.createComment(
             body,
+            mediaId,
             jwtManipulationService.decodeJwtToken(bearer, "id"),
         )
     }

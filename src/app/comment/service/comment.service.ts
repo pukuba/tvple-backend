@@ -42,7 +42,11 @@ export class CommentService {
         return await this.commentRepository.deleteComment(commentId, userId)
     }
 
-    async createComment(args: CreateCommentDto, userId: string) {
+    async createComment(
+        args: CreateCommentDto,
+        mediaId: string,
+        userId: string,
+    ) {
         let user: UserEntity
         if (!(args.color === "#ffffff" || args.color === "#000000")) {
             user = await this.userRepository.getUserById(userId)
@@ -56,6 +60,7 @@ export class CommentService {
         try {
             return await this.commentRepository.createComment({
                 ...args,
+                mediaId,
                 userId,
             })
         } catch {
