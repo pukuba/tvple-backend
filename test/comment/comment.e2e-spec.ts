@@ -89,6 +89,19 @@ describe("Comment E2E", () => {
         equal(body.comment[0].userId, "pukuba")
     })
 
+    it("/v1/comment/info/:commentId", async () => {
+        const { body } = await request(app.getHttpServer())
+            .get(`/v1/comment/info/${commentId}`)
+            .set("Authorization", token)
+            .expect(200)
+        equal(body.userId, "pukuba")
+        equal(body.mediaId, mediaId)
+        equal(body.content, "test comment")
+        equal(body.commentId, commentId)
+        equal(body.user.id, "pukuba")
+        equal(body.user.username, "pukuba")
+    })
+
     it("/v1/comment/:commentId (DELETE)", async () => {
         const { body } = await request(app.getHttpServer())
             .delete(`/v1/comment/${commentId}`)

@@ -196,6 +196,20 @@ describe("MediaService", () => {
         })
     })
 
+    describe("getCommentInfo", async () => {
+        it("should be return CommentEntity & UserEntity", async () => {
+            const result = await service.getCommentInfo(commentId1)
+            equal(result.mediaId, mediaId1)
+            equal(result.content, "test-comment")
+            equal(result.posX, 11.11)
+            equal(result.posY, 22.22)
+            equal(result.color, "#ffffff")
+            equal(result.timeStamp, 111.1)
+            equal(result.user.username, "test")
+            equal(result.user.id, "test")
+        })
+    })
+
     describe("deleteComment", async () => {
         it("should be throw ForbiddenException error", async () => {
             try {
