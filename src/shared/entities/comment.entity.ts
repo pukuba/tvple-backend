@@ -32,7 +32,7 @@ export class CommentEntity {
 
     @Column({
         type: "varchar",
-        length: 20,
+        length: 36,
         nullable: false,
     })
     mediaId: string

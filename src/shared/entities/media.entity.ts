@@ -15,6 +15,7 @@ import {
 } from "typeorm"
 import * as shortid from "shortid"
 import { UserEntity } from "./user.entity"
+import { CommentEntity } from "./comment.entity"
 
 @Entity("media")
 export class MediaEntity {
@@ -42,6 +43,10 @@ export class MediaEntity {
     @ManyToOne(() => UserEntity, { onDelete: "CASCADE" })
     @JoinColumn({ referencedColumnName: "id", name: "userId" })
     user: UserEntity
+
+    @OneToMany(() => CommentEntity, (comment) => comment.media)
+    @JoinColumn({ referencedColumnName: "mediaId", name: "mediaId" })
+    comment: CommentEntity
 
     @Column({
         type: "varchar",

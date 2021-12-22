@@ -98,7 +98,9 @@ export class UserRepository extends Repository<UserEntity> {
                 password: user.password,
             })
             if (affected === 0) throw new Error()
-            await this.query("delete from `like` where userId = ?", [user.id])
+            await this.query("delete from `comment` where userId = ?", [
+                user.id,
+            ])
         } catch (e) {
             throw new NotFoundException("계정이 존재하지 않습니다")
         }

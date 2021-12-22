@@ -40,9 +40,10 @@ export class MediaRepository extends Repository<MediaEntity> {
         const media: MediaEntity = await this.createQueryBuilder("media")
             .where("media.mediaId = :mediaId", { mediaId })
             .leftJoinAndSelect("media.user", "user")
-            .select(["media", "user.username"])
+            .leftJoinAndSelect("media.comment", "comment")
+            .select(["media", "user.username", "comment"])
+            .orderBy("comment.timeStamp", "ASC")
             .getOne()
-
         if (media === undefined) {
             throw new NotFoundException("해당 영상이 존재하지 않습니다")
         }
