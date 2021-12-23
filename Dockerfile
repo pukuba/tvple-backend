@@ -13,5 +13,4 @@ RUN npm install -g yarn;\
 
 EXPOSE 3000
 
-# CMD ["/bin/sh" ,"./run.sh" ]
-CMD ["yarn", "start"]
+CMD ["/bin/sh" ,"./run.sh" ]

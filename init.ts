@@ -8,6 +8,7 @@ const data = {
     username: process.env.DB_USERNAME || "root",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_DATABASE || "test",
+    port: process.env.DB_PORT || "3306",
     entities: [
         process.env.NODE_ENV === "dev"
             ? "dist/**/*.entity{.ts,.js}"
