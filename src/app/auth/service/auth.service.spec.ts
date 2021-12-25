@@ -9,7 +9,7 @@ import { deepStrictEqual as equal } from "assert"
 // Local files
 import { AuthController } from "../controller/auth.controller"
 import { AuthService } from "./auth.service"
-import { RedisService } from "src/shared/Services/redis.service"
+import { RedisService } from "src/shared/services/redis.service"
 import { AuthModule } from "../auth.module"
 import { UserRepository } from "src/shared/repositories/user.repository"
 
