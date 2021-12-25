@@ -24,13 +24,13 @@ services:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
         ports:
-            - "5555:3306"
+            - "3306:3306"
 
     proxy:
         image: nginx:latest
         container_name: proxy
         ports:
-            - "7777:80"
+            - "80:80"
         volumes:
             - ./proxy/nginx.conf:/etc/nginx/nginx.conf
         restart: "unless-stopped"
