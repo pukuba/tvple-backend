@@ -62,7 +62,7 @@ describe("MediaService", () => {
                     {
                         file: 1,
                         title: "test-1",
-                        description: "이건 test-1 영상입니다",
+                        description: "test-1 description",
                     },
                     "https://pukuba.dev/1",
                 )
@@ -73,7 +73,7 @@ describe("MediaService", () => {
                     {
                         file: 2,
                         title: "test-2",
-                        description: "이건 test-2 영상입니다",
+                        description: "test-2 description",
                     },
                     "https://pukuba.dev/2",
                 )
