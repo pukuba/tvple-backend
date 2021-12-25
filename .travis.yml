@@ -1,0 +1,30 @@
+services:
+    - mysql
+    - redis
+
+language: node_js
+
+node_js:
+    - stable
+
+dist: xenial
+
+before_install:
+    - mysql -e 'CREATE DATABASE test;'
+
+cache:
+    directories:
+        - node_modules
+
+branches:
+    only:
+        - master
+        - develop
+
+install:
+    - yarn install
+
+script:
+    - yarn update;
+    - yarn test:e2e;
+    - yarn test;

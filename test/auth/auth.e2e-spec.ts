@@ -23,6 +23,9 @@ describe("Auth E2E", () => {
         app = moduleFixture.createNestApplication()
         await app.init()
     })
+    after(async () => {
+        await app.close()
+    })
 
     let verificationToken: string
     it("/v1/auth/code (POST)", async () => {

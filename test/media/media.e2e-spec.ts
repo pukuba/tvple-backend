@@ -12,7 +12,8 @@ import { configService } from "../../src/shared/services/config.service"
 import { RedisService } from "../../src/shared/services/redis.service"
 import { jwtManipulationService } from "src/shared/services/jwt.manipulation.service"
 import { beforeRegister, afterDeleteAccount } from "../lib"
-
+import { UserRepository } from "src/shared/repositories/user.repository"
+import { MediaRepository } from "src/shared/repositories/media.repository"
 describe("Media E2E", () => {
     let app: INestApplication
     let token1: string, token2: string, mediaId1: string
@@ -22,6 +23,8 @@ describe("Media E2E", () => {
         }).compile()
 
         app = moduleFixture.createNestApplication()
+        moduleFixture.get<UserRepository>(UserRepository)
+        moduleFixture.get<MediaRepository>(MediaRepository)
         await app.init()
 
         token1 = await beforeRegister(app, {
@@ -39,18 +42,17 @@ describe("Media E2E", () => {
     })
 
     after(async () => {
-        await Promise.all([
-            afterDeleteAccount(app, {
-                id: "pukuba",
-                pw: "test1234!@",
-                token: token1,
-            }),
-            afterDeleteAccount(app, {
-                id: "erolf0123",
-                pw: "test1234!@",
-                token: token2,
-            }),
-        ])
+        await afterDeleteAccount(app, {
+            id: "pukuba",
+            pw: "test1234!@",
+            token: token1,
+        })
+        await afterDeleteAccount(app, {
+            id: "erolf0123",
+            pw: "test1234!@",
+            token: token2,
+        })
+        await app.close()
     })
 
     it("/v1/media/upload (POST)", async () => {

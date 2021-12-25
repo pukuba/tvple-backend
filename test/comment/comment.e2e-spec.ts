@@ -26,9 +26,9 @@ describe("Comment E2E", () => {
         app = moduleFixture.createNestApplication()
         await app.init()
         token = await beforeRegister(app, {
-            id: "pukuba",
+            id: "pukuba123",
             pw: "test1234!@",
-            username: "pukuba",
+            username: "pukuba123",
             phoneNumber: "01000000000",
         })
         const { body } = await request(app.getHttpServer())
@@ -40,7 +40,7 @@ describe("Comment E2E", () => {
             .attach("file", "./test/sample-mp4-file-small.mp4")
             .expect(201)
 
-        equal(body.userId, "pukuba")
+        equal(body.userId, "pukuba123")
         equal(body.title, "test title")
         mediaId = body.mediaId
     })
@@ -58,7 +58,7 @@ describe("Comment E2E", () => {
             })
             .expect(201)
 
-        equal(body.userId, "pukuba")
+        equal(body.userId, "pukuba123")
         equal(body.mediaId, mediaId)
         equal(body.content, "test comment")
         commentId = body.commentId
@@ -71,7 +71,7 @@ describe("Comment E2E", () => {
             .expect(200)
 
         equal(body.data.length, 1)
-        equal(body.data[0].userId, "pukuba")
+        equal(body.data[0].userId, "pukuba123")
         equal(body.data[0].mediaId, mediaId)
         equal(body.data[0].content, "test comment")
         equal(body.data[0].commentId, commentId)
@@ -82,11 +82,11 @@ describe("Comment E2E", () => {
             .get(`/v1/media/${mediaId}`)
             .set("Authorization", token)
             .expect(200)
-        equal(body.user.username, "pukuba")
+        equal(body.user.username, "pukuba123")
         equal(body.mediaId, mediaId)
         equal(body.title, "test title")
         equal(body.description, "test media description")
-        equal(body.comment[0].userId, "pukuba")
+        equal(body.comment[0].userId, "pukuba123")
     })
 
     it("/v1/comment/info/:commentId", async () => {
@@ -94,12 +94,12 @@ describe("Comment E2E", () => {
             .get(`/v1/comment/info/${commentId}`)
             .set("Authorization", token)
             .expect(200)
-        equal(body.userId, "pukuba")
+        equal(body.userId, "pukuba123")
         equal(body.mediaId, mediaId)
         equal(body.content, "test comment")
         equal(body.commentId, commentId)
-        equal(body.user.id, "pukuba")
-        equal(body.user.username, "pukuba")
+        equal(body.user.id, "pukuba123")
+        equal(body.user.username, "pukuba123")
     })
 
     it("/v1/comment/:commentId (DELETE)", async () => {
@@ -113,9 +113,10 @@ describe("Comment E2E", () => {
 
     after(async () => {
         await afterDeleteAccount(app, {
-            id: "pukuba",
+            id: "pukuba123",
             pw: "test1234!@",
             token: token,
         })
+        await app.close()
     })
 })

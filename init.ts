@@ -8,6 +8,7 @@ const data = {
     username: process.env.DB_USERNAME || "root",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_DATABASE || "test",
+    keepConnectionAlive: process.env.NODE_ENV === "test",
     port: process.env.DB_PORT || "3306",
     entities: [
         process.env.NODE_ENV === "dev"
