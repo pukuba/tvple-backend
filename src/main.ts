@@ -8,8 +8,8 @@ async function bootstrap(): Promise<void> {
     app.setGlobalPrefix("api")
 
     const options = new DocumentBuilder()
-        .setTitle("form-clay REST API")
-        .setDescription("The form-clay API description")
+        .setTitle("tvple REST API")
+        .setDescription("The tvple api description")
         .setVersion("1.0")
         .setBasePath("api")
         .addBearerAuth()
