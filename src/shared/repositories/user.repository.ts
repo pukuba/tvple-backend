@@ -73,6 +73,26 @@ export class UserRepository extends Repository<UserEntity> {
         }
     }
 
+    async getUserListbyUsername(username: string, page: number = 1) {
+        const skip = Math.max(page - 1, 0) * 20
+        const take = 20
+        const [result, total] = await Promise.all([
+            this.query(`
+                select * from user where match(username)
+                against('${username}' IN BOOLEAN MODE)
+                limit ${skip}, ${take}
+            `),
+            this.query(`
+                select count(DISTINCT id) as total from user where match(username)
+                against('${username}' IN BOOLEAN MODE)
+            `),
+        ])
+        return {
+            data: result,
+            count: ~~total[0].total,
+        }
+    }
+
     async updateUserPassword(
         phoneNumber: string,
         password: string,

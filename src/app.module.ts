@@ -13,6 +13,7 @@ import { AuthService } from "./app/auth/service/auth.service"
 import { CommentModule } from "./app/comment/comment.module"
 import { HealthModule } from "./app/health/health.module"
 import { RedisService } from "./shared/services/redis.service"
+import { UserModule } from "./app/user/user.module"
 
 import { MediaModule } from "./app/media/media.module"
 @Global()
@@ -29,6 +30,7 @@ import { MediaModule } from "./app/media/media.module"
         MediaModule,
         HealthModule,
         CommentModule,
+        UserModule,
     ],
     controllers: [AppController],
     providers: [RedisService],
