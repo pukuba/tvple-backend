@@ -27,7 +27,7 @@ export class UserEntity {
     })
     id: string
 
-    @Index({ unique: true })
+    @Index({ fulltext: true })
     @PrimaryColumn({
         type: "varchar",
         length: 20,
