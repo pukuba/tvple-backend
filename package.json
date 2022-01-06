@@ -24,6 +24,7 @@
         "test:e2e:comment": "NODE_PATH=./ mocha --require ts-node/register --timeout 100000 ./test/comment/*spec.ts --exit",
         "test:e2e:health": "NODE_PATH=./ mocha --require ts-node/register --timeout 100000 ./test/health/*spec.ts --exit",
         "test:e2e:media": "NODE_PATH=./ mocha --require ts-node/register --timeout 100000 ./test/media/*spec.ts --exit",
+        "test:e2e:user": "NODE_PATH=./ mocha --require ts-node/register --timeout 100000 ./test/user/*spec.ts --exit",
         "migration:create": "typeorm migration:create -n myMigration -d migrations",
         "migration:generate": "typeorm migration:generate -n myMigration -d migrations",
         "migration:run": "typeorm migration:run",
